@@ -1,0 +1,38 @@
+Courrier.configure do |config|
+  include Courrier::Email::Address
+
+  # Choose your email delivery provider
+  # Default: `logger`
+  # config.provider = ""
+
+  # Add your email provider's API key
+  # config.api_key = ""
+
+  # Configure provider-specific settings
+  # config.providers.loops.transactional_id = ""
+  # config.providers.mailgun.domain = ""
+
+
+  # Set default sender details
+  config.from = email_with_name("support@example.com", "Example Support") # => `Example Support <support@example.com>`
+  # config.reply_to = ""
+  # config.cc = ""
+  # config.bcc = ""
+
+
+  # Set host for Rails URL helpers, e.g. `{host: "https://railsdesigner.com/"}`
+  # config.default_url_options = {}
+
+  # Generate text version from HTML content
+  # Default: `false`
+  # config.auto_generate_text = false
+
+  # Location for generated Courrier Emails
+  # Default: `app/emails`
+  # config.email_path = ""
+
+
+  # Select logger for the `logger` provider
+  # Default: `::Logger.new($stdout)` - Ruby's built-in Logger
+  # config.logger = ""
+end

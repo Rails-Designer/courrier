@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title><%= @options.subject %></title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      * { margin: 0; padding: 0; }
+      body { margin: 0; padding: .5rem; line-height: 1.5; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; background-color: rgb(241,  245, 249); }
+      pre { margin: 0; white-space: pre-wrap; }
+      .email {
+        width: 100%;
+        max-width: 65rem;
+        margin-left: auto; margin-right: auto;
+        background-color: #fff;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        border-radius: 1rem;
+      }
+
+      .email__header { display: flex; align-items: center; padding: 1rem .75rem; -moz-column-gap: .75rem; column-gap: .75rem; }
+
+      .email__avatar {
+        flex-shrink: 0;
+        padding: .25rem;
+        width: 2.5rem; height: 2.5rem;
+        background-color: rgb(203, 213, 225);
+        color: rgb(51, 65, 85);
+        border-radius: 9999px;
+      }
+
+      .email__recipient { flex-grow: 1; font-size: .875rem; line-height: 1.25rem; }
+
+      .email__recipient-name { font-weight: 600; color: rgb(51, 65, 85); }
+
+      .email__metadata { display: flex; align-items: center; justify-content: space-between; }
+
+      .email__recipient-email { color: rgb(100, 116, 139); }
+
+      .email__datetime { font-size: .75rem; line-height: 1rem; color: rgb(148, 163, 184); }
+
+      .email__subject {
+        margin-left: 4rem;
+        font-size: 1.25rem; line-height: 1.75rem;
+        font-weight: 700;
+        letter-spacing: -.025em;
+        color: rgb(30, 41, 59)
+      }
+
+      .email__preview { margin-top: .75rem; margin-left: 4rem; padding: .5rem .25rem; }
+
+      .preview-toggle { display: none; }
+      .preview-toggle-label {
+        display: inline-block;
+        padding: .25rem .875rem;
+        font-size: .75rem; line-height: 1rem;
+        font-weight: 600;
+        color: rgb(30, 41, 59);
+        background-color: rgb(255, 255, 255);
+        border: 1px solid rgb(226, 232, 240);
+        border-radius: .375rem;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        cursor: pointer;
+
+        &:hover { border-color: rgb(203, 213, 225); }
+        &:active { transform: scale(.98); }
+      }
+      .preview-toggle[disabled] + .preview-toggle-label { opacity: 0.5; cursor: not-allowed; }
+
+      .email__preview-html, .email__preview-text { margin-top: 1.5rem;}
+      .email__preview-html { display: none; }
+      .preview-toggle:checked ~ .email__preview-text { display: none; }
+      .preview-toggle:checked ~ .email__preview-html { display: block; }
+    </style>
+  </head>
+  <body>
+    <article class="email">
+      <header class="email__header">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" class="email__avatar">
+          <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd"/>
+        </svg>
+
+        <div class="email__recipient">
+          <% if name %>
+            <p class="email__recipient-name">
+              <%= name %>
+            </p>
+          <% end %>
+
+          <div class="email__metadata">
+            <p class="email__recipient-email">
+              <%= email %>
+            </p>
+
+            <time class="email__datetime" datetime="#{Time.now.strftime("%Y-%m-%d %H:%M:%S %z")}">
+              <%= Time.now.strftime("%Y-%m-%d %H:%M:%S %z") %>
+            </time>
+          </div>
+        </div>
+      </header>
+
+      <p class="email__subject">
+        <%= @options.subject %>
+      </p>
+
+      <div class="email__preview">
+        <input type="checkbox" id="preview-toggle" class="preview-toggle" <%= html ? "" : "disabled" %>>
+        <label for="preview-toggle" class="preview-toggle-label">Toggle HTML/Text</label>
+
+        <div class="email__preview-text">
+          <pre><%= text || "(no text content)" %></pre>
+        </div>
+
+        <div class="email__preview-html">
+          <%= html || "<p>(no HTML content)</p>" %>
+        </div>
+      </div>
+    </article>
+  </body>
+</html>

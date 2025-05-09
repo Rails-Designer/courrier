@@ -1,0 +1,15 @@
+class <%= class_name %><%= options[:skip_suffix] ? "" : "Email" %> < <%= parent_class %>
+  def subject = ""
+
+  # Create HTML and text emails using:
+  # https://railsdesigner.com/minimal-email-editor/
+  def text
+    <<~TEXT
+    TEXT
+  end
+
+  def html
+    <<~HTML
+    HTML
+  end
+end
