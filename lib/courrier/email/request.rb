@@ -42,11 +42,9 @@ module Courrier
       end
 
       def body_for(request)
-        if requires_multipart_form?
-          set_multipart_form(request)
-        else
-          set_json_body(request)
-        end
+        return set_multipart_form(request) if requires_multipart_form?
+
+        set_json_body(request)
       end
 
       def default_headers
