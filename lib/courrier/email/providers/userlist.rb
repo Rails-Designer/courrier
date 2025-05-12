@@ -11,7 +11,7 @@ module Courrier
             "from" => @options.from,
             "to" => @options.to,
             "subject" => @options.subject,
-            "body" => body_document,
+            "body" => body_document
           }.compact.merge(provider_options)
         end
 
@@ -36,14 +36,14 @@ module Courrier
         def text_document
           {
             "type" => "text",
-            "content" => @options.text,
+            "content" => @options.text
           }
         end
 
         def html_document
           {
             "type" => "html",
-            "content" => @options.html,
+            "content" => @options.html
           }
         end
 
@@ -58,7 +58,7 @@ module Courrier
         end
 
         def provider_options
-          { "theme" => nil }.merge(@provider_options)
+          {"theme" => nil}.merge(@provider_options)
         end
       end
     end
