@@ -2,6 +2,8 @@
 
 Modern, API-powered email delivery for Ruby apps.
 
+![A cute cartoon mascot wearing a blue postal uniform with red scarf and cap, carrying a leather messenger bag, representing a modern email delivery system for Ruby applications](https://raw.githubusercontent.com/Rails-Designer/courrier/HEAD/.github/cover.jpg)
+
 ```ruby
 # Quick example
 OrderEmail.deliver to: "recipient@railsdesigner.com"
