@@ -159,6 +159,7 @@ Courrier supports these transactional email providers:
 - [Mailjet](https://mailjet.com)
 - [MailPace](https://mailpace.com)
 - [Postmark](https://postmarkapp.com)
+- [Resend](https://resend.com)
 - [SendGrid](https://sendgrid.com)
 - [SparkPost](https://sparkpost.com)
 - [Userlist](https://userlist.com)
