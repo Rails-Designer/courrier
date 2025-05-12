@@ -39,6 +39,7 @@ Generate a new email:
 ```bash
 bin/rails generate courrier:email Order
 ```
+
 ```ruby
 class OrderEmail < Courrier::Email
   def subject = "Here is your order!"
@@ -55,7 +56,10 @@ class OrderEmail < Courrier::Email
     HTML
   end
 end
+
+# OrderEmail.deliver to: "recipient@railsdesigner.com"
 ```
+
 💡 Write your email content using the [Minimal Email Editor](https://railsdesigner.com/minimal-email-editor/).
 
 
@@ -80,7 +84,7 @@ end
 2. **Email class defaults**
 ```ruby
 class OrderEmail < Courrier::Email
-  configure from: "devs@railsdesigner.com",
+  configure from: "orders@railsdesigner.com",
             cc: "records@railsdesigner.com",
             provider: "mailgun",
 end
@@ -89,9 +93,58 @@ end
 3. **Instance options**
 ```ruby
 OrderEmail.deliver to: "recipient@railsdesigner.com",\
-                   from: "devs@railsdesigner.com",\
+                   from: "shop@railsdesigner.com",\
                    provider: "sendgrid",\
                    api_key: "sk_a1b1c3"
+```
+
+
+Provider and API key settings can be overridden using environment variables (`COURRIER_PROVIDER` and `COURRIER_API_KEY`) for both global configuration and email class defaults.
+
+
+## Custom Attributes
+
+Besides the standard email attributes (`from`, `to`, `reply_to`, etc.), you can pass any additional attributes that will be available in your email templates:
+```ruby
+OrderEmail.deliver to: "recipient@railsdesigner.com", download_url: downloads_path(token: "token")
+```
+
+These custom attributes are accessible directly in your email class:
+```ruby
+def text
+  <<~TEXT
+    #{download_url}
+  TEXT
+end
+```
+
+
+## Result Object
+
+When sending an email through Courrier, a `Result` object is returned that provides information about the delivery attempt. This object offers a simple interface to check the status and access response data.
+
+
+### Available Methods
+
+| Method | Return Type | Description |
+|:-------|:-----------|:------------|
+| `success?` | Boolean | Returns `true` if the API request was successful |
+| `response` | Net::HTTP::Response | The raw HTTP response from the email provider |
+| `data` | Hash | Parsed JSON response body from the provider |
+| `error` | Exception | Contains any error that occurred during delivery |
+
+
+### Example
+
+```ruby
+delivery = OrderEmail.deliver(to: "recipient@example.com")
+
+if delivery.success?
+  puts "Email sent successfully!"
+  puts "Provider response: #{delivery.data}"
+else
+  puts "Failed to send email: #{delivery.error}"
+end
 ```
 
 
@@ -119,10 +172,10 @@ Additional functionality to help with development and email handling:
 
 Preview emails in your browser during development:
 ```ruby
- config.provider = "preview" # Opens emails in your default browser
+config.provider = "preview" # Opens emails in your default browser
 ```
 
- Previews are automatically cleared with `bin/rails tmp:clear`, or manually with `bin/rails courrier:clear`.
+Previews are automatically cleared with `bin/rails tmp:clear`, or manually with `bin/rails courrier:clear`.
 
 
 ### Layout Support
@@ -172,13 +225,13 @@ end
 
 Automatically generate plain text versions from your HTML emails:
 ```ruby
- config.auto_generate_text = true # Defaults to false
+config.auto_generate_text = true # Defaults to false
 ```
 
 
 ### Email Address Helper
 
-Compose RFC 2822-compliant email addresses with display names:
+Compose email addresses with display names:
 ```ruby
 class SignupsController < ApplicationController
   def create
@@ -214,9 +267,9 @@ config.logger = custom_logger # Optional: defaults to ::Logger.new($stdout)
 
 ### Custom Providers
 
-Create your own provider by inheriting from `Courrier::Email::Base`:
+Create your own provider by inheriting from `Courrier::Email::Providers::Base`:
 ```ruby
-class CustomProvider < Courrier::Email::Base
+class CustomProvider < Courrier::Email::Providers::Base
   ENDPOINT_URL = ""
 
   def body = ""
