@@ -29,7 +29,11 @@ module Courrier
 
         def content_type = "multipart/form-data"
 
-        def authentication_for(request) = request.basic_auth("api", @api_key)
+        def headers
+          {
+            "Authorization" => "Basic #{Base64.strict_encode64("api:#{@api_key}")}"
+          }
+        end
       end
     end
   end
