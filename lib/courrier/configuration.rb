@@ -45,9 +45,7 @@ module Courrier
     private
 
     def default_email_path
-      return Rails.root.join("app", "emails").to_s if defined?(Rails)
-
-      File.join("courrier", "emails")
+      defined?(Rails) ? Rails.root.join("app", "emails").to_s : File.join("courrier", "emails")
     end
   end
 end

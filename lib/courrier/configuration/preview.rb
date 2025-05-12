@@ -14,9 +14,7 @@ module Courrier
       private
 
       def default_destination
-        return Rails.root.join("tmp", "courrier", "emails").to_s if defined?(Rails)
-
-        File.join(Dir.tmpdir, "courrier", "emails")
+        defined?(Rails) ? Rails.root.join("tmp", "courrier", "emails").to_s : File.join(Dir.tmpdir, "courrier", "emails")
       end
     end
   end
