@@ -79,7 +79,7 @@ module Courrier
         provider: @provider,
         api_key: @api_key,
         options: @options,
-        provider_options: Courrier.configuration&.providers&.[](@provider.to_s.downcase.to_sym)&.to_h
+        provider_options: Courrier.configuration&.providers&.[](@provider.to_s.downcase.to_sym)
       ).deliver
     end
     alias_method :deliver_now, :deliver
