@@ -34,10 +34,12 @@ class Courrier::EmailDeliveryTest < Minitest::Test
     email_mock.verify
   end
 
-  def test_provider_options_included_in_delivery
+  def test_mailgun_provider_options
     Courrier.configure do |config|
       config.providers.mailgun.domain = "railsdesigner.com"
-      config.providers.mailgun.tracking = true
+
+      config.providers.postmark.enable_tracking = true
+      config.providers.loops.transactional_id = "tr-1234"
     end
 
     email = TestEmail.new(
@@ -53,7 +55,60 @@ class Courrier::EmailDeliveryTest < Minitest::Test
       email.deliver_now
     end
 
-    assert_equal "railsdesigner.com", options_captured[:provider_options][:domain]
-    assert_equal true, options_captured[:provider_options][:tracking]
+    assert_equal "railsdesigner.com", options_captured[:provider_options].domain
+    assert_nil options_captured[:provider_options].enable_tracking
+    assert_nil options_captured[:provider_options].transactional_id
+  end
+
+  def test_postmark_provider_options
+    Courrier.configure do |config|
+      config.providers.postmark.enable_tracking = true
+
+      config.providers.mailgun.domain = "railsdesigner.com"
+      config.providers.loops.transactional_id = "tr-1234"
+    end
+
+    email = TestEmail.new(
+      provider: "postmark",
+      from: "devs@railsdesigner.com",
+      to: "recipient@railsdesigner.com"
+    )
+
+    options_captured = nil
+    mock_provider = create_mock_provider
+
+    Courrier::Email::Provider.stub :new, ->(options) { options_captured = options; mock_provider } do
+      email.deliver_now
+    end
+
+    assert_equal true, options_captured[:provider_options].enable_tracking
+    assert_nil options_captured[:provider_options].domain
+    assert_nil options_captured[:provider_options].transactional_id
+  end
+
+  def test_loops_provider_options
+    Courrier.configure do |config|
+      config.providers.loops.transactional_id = "tr-1234"
+
+      config.providers.mailgun.domain = "railsdesigner.com"
+      config.providers.postmark.enable_tracking = true
+    end
+
+    email = TestEmail.new(
+      provider: "loops",
+      from: "devs@railsdesigner.com",
+      to: "recipient@railsdesigner.com"
+    )
+
+    options_captured = nil
+    mock_provider = create_mock_provider
+
+    Courrier::Email::Provider.stub :new, ->(options) { options_captured = options; mock_provider } do
+      email.deliver_now
+    end
+
+    assert_equal "tr-1234", options_captured[:provider_options].transactional_id
+    assert_nil options_captured[:provider_options].domain
+    assert_nil options_captured[:provider_options].enable_tracking
   end
 end
