@@ -10,6 +10,7 @@ require "courrier/email/providers/postmark"
 require "courrier/email/providers/preview"
 require "courrier/email/providers/sendgrid"
 require "courrier/email/providers/sparkpost"
+require "courrier/email/providers/userlist"
 
 module Courrier
   class Email
@@ -43,7 +44,8 @@ module Courrier
         postmark: Courrier::Email::Providers::Postmark,
         preview: Courrier::Email::Providers::Preview,
         sendgrid: Courrier::Email::Providers::Sendgrid,
-        sparkpost: Courrier::Email::Providers::Sparkpost
+        sparkpost: Courrier::Email::Providers::Sparkpost,
+        userlist: Courrier::Email::Providers::Userlist
       }.freeze
 
       def configuration_missing_in_production?

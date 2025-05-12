@@ -161,6 +161,7 @@ Courrier supports these transactional email providers:
 - [Postmark](https://postmarkapp.com)
 - [SendGrid](https://sendgrid.com)
 - [SparkPost](https://sparkpost.com)
+- [Userlist](https://userlist.com)
 
 ⚠️ Some providers still need manual verification of their implementation. If you're using one of these providers, please help verify the implementation by sharing your experience in [this GitHub issue](https://github.com/Rails-Designer/courrier/issues/4). 🙏
 
