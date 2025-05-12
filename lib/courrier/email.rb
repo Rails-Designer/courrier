@@ -49,7 +49,7 @@ module Courrier
 
     def initialize(options = {})
       @provider = options[:provider] || ENV["COURRIER_PROVIDER"] || self.class.provider || Courrier.configuration&.provider
-      @api_key = options[:api_key] || ENV["COURRIER_PROVIDER"] || self.class.api_key || Courrier.configuration&.api_key
+      @api_key = options[:api_key] || ENV["COURRIER_API_KEY"] || self.class.api_key || Courrier.configuration&.api_key
 
       @default_url_options = self.class.default_url_options.merge(options[:default_url_options] || {})
       @context_options = options.except(:provider, :api_key, :from, :to, :reply_to, :cc, :bcc, :subject, :text, :html)
