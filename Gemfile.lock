@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    courrier (0.5.1)
+    courrier (0.6.0)
       launchy (>= 3.1, < 4)
       nokogiri (>= 1.18, < 2)
 
