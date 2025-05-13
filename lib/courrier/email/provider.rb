@@ -8,6 +8,7 @@ require "courrier/email/providers/mailjet"
 require "courrier/email/providers/mailpace"
 require "courrier/email/providers/postmark"
 require "courrier/email/providers/preview"
+require "courrier/email/providers/resend"
 require "courrier/email/providers/sendgrid"
 require "courrier/email/providers/sparkpost"
 require "courrier/email/providers/userlist"
@@ -43,6 +44,7 @@ module Courrier
         mailpace: Courrier::Email::Providers::Mailpace,
         postmark: Courrier::Email::Providers::Postmark,
         preview: Courrier::Email::Providers::Preview,
+        resend: Courrier::Email::Providers::Resend,
         sendgrid: Courrier::Email::Providers::Sendgrid,
         sparkpost: Courrier::Email::Providers::Sparkpost,
         userlist: Courrier::Email::Providers::Userlist
