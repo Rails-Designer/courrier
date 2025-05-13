@@ -22,14 +22,7 @@ module Courrier
           }
         end
 
-        def data_variables
-          {
-            "from" => @options.from,
-            "subject" => @options.subject,
-            "text_content" => @options.text,
-            "html_content" => @options.html
-          }.compact
-        end
+        def data_variables = @context_options.compact
       end
     end
   end

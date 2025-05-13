@@ -6,10 +6,11 @@ module Courrier
   class Email
     module Providers
       class Base
-        def initialize(api_key: nil, options: {}, provider_options: {})
+        def initialize(api_key: nil, options: {}, provider_options: {}, context_options: {})
           @api_key = api_key
           @options = options
           @provider_options = provider_options
+          @context_options = context_options
         end
 
         def deliver
