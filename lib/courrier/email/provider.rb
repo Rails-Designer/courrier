@@ -16,11 +16,12 @@ require "courrier/email/providers/userlist"
 module Courrier
   class Email
     class Provider
-      def initialize(provider: nil, api_key: nil, options: {}, provider_options: {})
+      def initialize(provider: nil, api_key: nil, options: {}, provider_options: {}, context_options: {})
         @provider = provider
         @api_key = api_key
         @options = options
         @provider_options = provider_options
+        @context_options = context_options
       end
 
       def deliver
@@ -30,7 +31,8 @@ module Courrier
         provider_class.new(
           api_key: @api_key,
           options: @options,
-          provider_options: @provider_options
+          provider_options: @provider_options,
+          context_options: @context_options
         ).deliver
       end
 
