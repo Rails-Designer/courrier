@@ -1,8 +1,8 @@
 # Courrier
 
-Modern, API-powered email delivery for Ruby apps.
+API-powered email delivery for Ruby apps.
 
-![A cute cartoon mascot wearing a blue postal uniform with red scarf and cap, carrying a leather messenger bag, representing a modern email delivery system for Ruby applications](https://raw.githubusercontent.com/Rails-Designer/courrier/HEAD/.github/cover.jpg)
+![A cute cartoon mascot wearing a blue postal uniform with red scarf and cap, carrying a leather messenger bag, representing an API-powered email delivery system for Ruby applications](https://raw.githubusercontent.com/Rails-Designer/courrier/HEAD/.github/cover.jpg)
 
 ```ruby
 # Quick example
@@ -108,7 +108,8 @@ Provider and API key settings can be overridden using environment variables (`CO
 
 Besides the standard email attributes (`from`, `to`, `reply_to`, etc.), you can pass any additional attributes that will be available in your email templates:
 ```ruby
-OrderEmail.deliver to: "recipient@railsdesigner.com", download_url: downloads_path(token: "token")
+OrderEmail.deliver to: "recipient@railsdesigner.com",\
+                   download_url: downloads_path(token: "token")
 ```
 
 These custom attributes are accessible directly in your email class:
@@ -169,17 +170,26 @@ Courrier supports these transactional email providers:
 
 ## More Features
 
-Additional functionality to help with development and email handling:
+Additional functionality to help with development and testing:
 
 
-### Email Preview
+### Inbox (Rails only)
 
-Preview emails in your browser during development:
+You can preview your emails in the inbox:
 ```ruby
-config.provider = "preview" # Opens emails in your default browser
+config.provider = "inbox"
+
+# And add to your routes:
+mount Courrier::Engine => "/courrier"
 ```
 
-Previews are automatically cleared with `bin/rails tmp:clear`, or manually with `bin/rails courrier:clear`.
+If you want to automatically open every email in your default browser:
+```ruby
+config.provider = "inbox"
+config.inbox.auto_open = true
+```
+
+Emails are automatically cleared with `bin/rails tmp:clear`, or manually with `bin/rails courrier:clear`.
 
 
 ### Layout Support

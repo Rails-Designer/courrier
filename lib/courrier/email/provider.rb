@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require "courrier/email/providers/base"
+require "courrier/email/providers/inbox"
 require "courrier/email/providers/logger"
 require "courrier/email/providers/loops"
 require "courrier/email/providers/mailgun"
 require "courrier/email/providers/mailjet"
 require "courrier/email/providers/mailpace"
 require "courrier/email/providers/postmark"
-require "courrier/email/providers/preview"
 require "courrier/email/providers/resend"
 require "courrier/email/providers/sendgrid"
 require "courrier/email/providers/sparkpost"
@@ -37,13 +37,13 @@ module Courrier
       private
 
       PROVIDERS = {
+        inbox: Courrier::Email::Providers::Inbox,
         logger: Courrier::Email::Providers::Logger,
         loops: Courrier::Email::Providers::Loops,
         mailgun: Courrier::Email::Providers::Mailgun,
         mailjet: Courrier::Email::Providers::Mailjet,
         mailpace: Courrier::Email::Providers::Mailpace,
         postmark: Courrier::Email::Providers::Postmark,
-        preview: Courrier::Email::Providers::Preview,
         resend: Courrier::Email::Providers::Resend,
         sendgrid: Courrier::Email::Providers::Sendgrid,
         sparkpost: Courrier::Email::Providers::Sparkpost,

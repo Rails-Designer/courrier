@@ -36,13 +36,13 @@ class TestCourrierEmailProvider < Minitest::Test
 
   def test_initializes_correct_provider_class
     provider_classes = {
+      inbox: Courrier::Email::Providers::Inbox,
       logger: Courrier::Email::Providers::Logger,
       loops: Courrier::Email::Providers::Loops,
       mailgun: Courrier::Email::Providers::Mailgun,
       mailjet: Courrier::Email::Providers::Mailjet,
       mailpace: Courrier::Email::Providers::Mailpace,
       postmark: Courrier::Email::Providers::Postmark,
-      preview: Courrier::Email::Providers::Preview,
       sendgrid: Courrier::Email::Providers::Sendgrid,
       sparkpost: Courrier::Email::Providers::Sparkpost
     }
