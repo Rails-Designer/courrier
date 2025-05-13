@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "courrier/configuration/preview"
+require "courrier/configuration/inbox"
 require "courrier/configuration/providers"
 
 module Courrier
@@ -21,7 +21,7 @@ module Courrier
   class Configuration
     attr_accessor :provider, :api_key, :logger, :email_path, :layouts, :default_url_options, :auto_generate_text,
       :from, :reply_to, :cc, :bcc
-    attr_reader :providers, :preview
+    attr_reader :providers, :inbox
 
     def initialize
       @provider = "logger"
@@ -39,7 +39,7 @@ module Courrier
       @bcc = nil
 
       @providers = Courrier::Configuration::Providers.new
-      @preview = Courrier::Configuration::Preview.new
+      @inbox = Courrier::Configuration::Inbox.new
     end
 
     private

@@ -1,7 +1,7 @@
 require "test_helper"
-require "courrier/email/providers/preview"
+require "courrier/email/providers/inbox"
 
-class Courrier::Email::Providers::PreviewTest < Minitest::Test
+class Courrier::Email::Providers::InboxTest < Minitest::Test
   include TestEmailHelpers
 
   def setup
@@ -13,10 +13,10 @@ class Courrier::Email::Providers::PreviewTest < Minitest::Test
       from: "devs@railsdesigner.com",
       to: "Rails Designer Devs <devs@railsdesigner.com>"
     )
-    preview = Courrier::Email::Providers::Preview.new(options: email.options)
+    inbox = Courrier::Email::Providers::Inbox.new(options: email.options)
 
-    assert_equal "Rails Designer Devs", preview.name
-    assert_equal "devs@railsdesigner.com", preview.email
+    assert_equal "Rails Designer Devs", inbox.name
+    assert_equal "devs@railsdesigner.com", inbox.email
   end
 
   def test_extract_email_only
@@ -24,10 +24,10 @@ class Courrier::Email::Providers::PreviewTest < Minitest::Test
       from: "devs@railsdesigner.com",
       to: "recipient@railsdesigner.com"
     )
-    preview = Courrier::Email::Providers::Preview.new(options: email.options)
+    inbox = Courrier::Email::Providers::Inbox.new(options: email.options)
 
-    assert_nil preview.name
-    assert_equal "recipient@railsdesigner.com", preview.email
+    assert_nil inbox.name
+    assert_equal "recipient@railsdesigner.com", inbox.email
   end
 
   def test_prepare_content_with_urls
@@ -39,8 +39,8 @@ class Courrier::Email::Providers::PreviewTest < Minitest::Test
       from: "devs@railsdesigner.com",
       to: "recipient@railsdesigner.com"
     )
-    preview = Courrier::Email::Providers::Preview.new(options: email.options)
+    inbox = Courrier::Email::Providers::Inbox.new(options: email.options)
 
-    assert_includes preview.text, '<a href="https://railsdesigner.com">https://railsdesigner.com</a>'
+    assert_includes inbox.text, '<a href="https://railsdesigner.com">https://railsdesigner.com</a>'
   end
 end

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Courrier Inbox</title>
+
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      * { margin: 0; padding: 0; }
+      body { margin: 0; padding: 0; font-size: 16px; line-height: 1.5; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; background-color: rgb(241,  245, 249); }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        padding: .5rem;
+        width: min(350px, 33.3333%); height: 100dvh;
+        border-right: 1px solid rgb(226, 232, 240);
+      }
+
+      .sidebar__options {
+        position: sticky;
+        bottom: 0;
+        padding: .5rem;
+        background-color: rgb(241, 245, 249);
+      }
+
+      .sidebar__btn-clear {
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 0.25rem;
+        width: 100%;
+        padding: .5rem;
+        font-size: .875rem; line-height: 1.25rem;
+        font-weight: 500;
+        color: rgb(71, 85, 105);
+        background-color: rgb(226, 232, 240);
+        border-radius: .5rem;
+        cursor: default;
+
+        &:hover { background-color: rgb(203, 213, 225); }
+        &:active { transform: scale(.98); }
+
+        [data-slot="icon"] {
+          width: .875rem; height: .875rem;
+        }
+      }
+
+      .email-previews {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        row-gap: .5rem;
+        overflow-y: auto;
+        width: 100%;
+      }
+
+      .email-preview {
+        display: flex;
+        flex-direction: row;
+        column-gap: .5rem;
+        width: 100%;
+        padding: .5rem .75rem;
+        text-decoration: none;
+        border-radius: .5rem;
+
+        &:hover {
+          background-color: rgba(226, 232, 240, .75);
+        }
+      }
+
+      .email-preview--empty {
+        display: none;
+        text-align: center;
+
+        &:only-child {
+          display: block;
+        }
+      }
+
+      .email-preview__avatar {
+        flex-shrink: 0;
+        padding: .25rem;
+        width: 1.5rem; height: 1.5rem;
+        background-color: rgb(203, 213, 225);
+        color: rgb(51, 65, 85);
+        border-radius: 9999px;
+      }
+
+      .email-preview__content {
+        font-size: 0.875rem; line-height: 1.25rem;
+      }
+
+      .email-preview__recipient {
+        font-size: 1rem; line-height: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -.025em;
+        color: rgb(51, 65, 85);
+      }
+
+      .email-preview__subject {
+        margin-top: .125rem;
+        overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1;
+        color: rgb(100, 116, 139);
+      }
+    </style>
+  </head>
+  <body>
+    <div style="display: flex; column-gap: 1rem;">
+      <aside class="sidebar">
+        <ul class="email-previews">
+          <li class="email-preview--empty">
+            <p class="email-preview__subject">
+              No emails yet…
+            </p>
+          </li>
+
+          <% @emails.each do |email| %>
+            <li>
+              <%= link_to courrier.preview_path(email.filename), data: {remote: true}, class: "email-preview" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" class="email-preview__avatar">
+                  <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd"/>
+                </svg>
+
+                <div class="email-preview__content">
+                  <small class="email-preview__recipient">
+                    <%= email.metadata.to %>
+                  </small>
+
+                  <p class="email-preview__subject">
+                    <%= email.metadata.subject || "No subject" %>
+                  </p>
+                </div>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+
+        <div class="sidebar__options">
+          <%= button_to courrier.cleanup_path, class: "sidebar__btn-clear" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+              <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd"/>
+            </svg>
+
+            Clear inbox
+          <% end %>
+        </div>
+      </aside>
+
+      <article style="flex: 1;" id="email-preview">
+      </article>
+    </div>
+
+    <script>
+      document.querySelectorAll("a[data-remote]").forEach(link => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+
+          fetch(link.href)
+            .then(response => response.text())
+            .then(html => {
+              document.getElementById("email-preview").innerHTML = html;
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

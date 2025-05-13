@@ -1,3 +1,10 @@
+<!--
+{
+  "to": "<%= email %>",
+  "subject": "<%= @options.subject %>"
+}
+-->
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -6,7 +13,7 @@
     <style>
       *, *::before, *::after { box-sizing: border-box; }
       * { margin: 0; padding: 0; }
-      body { margin: 0; padding: .5rem; line-height: 1.5; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; background-color: rgb(241,  245, 249); }
+      body { margin: 0; padding: 0; line-height: 1.5; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; background-color: rgb(241,  245, 249); }
       pre { margin: 0; white-space: pre-wrap; }
       .email {
         width: 100%;
@@ -14,15 +21,15 @@
         margin-left: auto; margin-right: auto;
         background-color: #fff;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        border-radius: 1rem;
+        border-bottom-right-radius: 1rem; border-bottom-left-radius: 1rem;
       }
 
-      .email__header { display: flex; align-items: center; padding: 1rem .75rem; -moz-column-gap: .75rem; column-gap: .75rem; }
+      .email__header { display: flex; align-items: center; padding: .75rem; -moz-column-gap: .75rem; column-gap: .75rem; }
 
       .email__avatar {
         flex-shrink: 0;
         padding: .25rem;
-        width: 2.5rem; height: 2.5rem;
+        width: 2rem; height: 2rem;
         background-color: rgb(203, 213, 225);
         color: rgb(51, 65, 85);
         border-radius: 9999px;
@@ -39,14 +46,14 @@
       .email__datetime { font-size: .75rem; line-height: 1rem; color: rgb(148, 163, 184); }
 
       .email__subject {
-        margin-left: 4rem;
+        margin-left: 3.5rem;
         font-size: 1.25rem; line-height: 1.75rem;
         font-weight: 700;
         letter-spacing: -.025em;
         color: rgb(30, 41, 59)
       }
 
-      .email__preview { margin-top: .75rem; margin-left: 4rem; padding: .5rem .25rem; }
+      .email__preview { margin-top: .75rem; margin-left: 3.5rem; padding-bottom: 1rem; }
 
       .preview-toggle { display: none; }
       .preview-toggle-label {
