@@ -6,6 +6,14 @@ API-powered email delivery for Ruby apps.
 
 ```ruby
 # Quick example
+class OrderEmail < Courrier::Email
+  def subject = "Here is your order!"
+
+  def text = "Thanks for ordering"
+
+  def html = "<p>Thanks for ordering</p>"
+end
+
 OrderEmail.deliver to: "recipient@railsdesigner.com"
 ```
 
@@ -157,7 +165,6 @@ Courrier supports these transactional email providers:
 
 - [Loops](https://loops.so)
 - [Mailgun](https://mailgun.com)
-- [Mailjet](https://mailjet.com)
 - [MailPace](https://mailpace.com)
 - [Postmark](https://postmarkapp.com)
 - [Resend](https://resend.com)
@@ -165,7 +172,7 @@ Courrier supports these transactional email providers:
 - [SparkPost](https://sparkpost.com)
 - [Userlist](https://userlist.com)
 
-⚠️ Some providers still need manual verification of their implementation. If you're using one of these providers, please help verify the implementation by sharing your experience in [this GitHub issue](https://github.com/Rails-Designer/courrier/issues/4). 🙏
+⚠️ A few providers still need manual verification of their implementation. If you're using one of these providers, please help verify the implementation by sharing your experience in [this GitHub issue](https://github.com/Rails-Designer/courrier/issues/4). 🙏
 
 
 ## More Features
