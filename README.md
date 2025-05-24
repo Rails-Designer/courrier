@@ -168,11 +168,7 @@ Courrier supports these transactional email providers:
 - [MailPace](https://mailpace.com)
 - [Postmark](https://postmarkapp.com)
 - [Resend](https://resend.com)
-- [SendGrid](https://sendgrid.com)
-- [SparkPost](https://sparkpost.com)
 - [Userlist](https://userlist.com)
-
-⚠️ A few providers still need manual verification of their implementation. If you're using one of these providers, please help verify the implementation by sharing your experience in [this GitHub issue](https://github.com/Rails-Designer/courrier/issues/4). 🙏
 
 
 ## More Features
