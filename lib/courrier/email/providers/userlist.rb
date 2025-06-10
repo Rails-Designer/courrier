@@ -33,18 +33,8 @@ module Courrier
           end
         end
 
-        def text_document
-          {
-            "type" => "text",
-            "content" => @options.text
-          }
-        end
-
-        def html_document
-          {
-            "type" => "html",
-            "content" => @options.html
-          }
+        def provider_options
+          {"theme" => nil}.merge(@provider_options)
         end
 
         def multipart_document
@@ -57,8 +47,18 @@ module Courrier
           }
         end
 
-        def provider_options
-          {"theme" => nil}.merge(@provider_options)
+        def html_document
+          {
+            "type" => "html",
+            "content" => @options.html
+          }
+        end
+
+        def text_document
+          {
+            "type" => "text",
+            "content" => @options.text
+          }
         end
       end
     end
