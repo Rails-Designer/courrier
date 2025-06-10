@@ -10,10 +10,4 @@ module Courrier
   class NotImplementedError < ::NotImplementedError; end
 
   class BackgroundDeliveryError < StandardError; end
-
-  class ActiveJobNotAvailableError < BackgroundDeliveryError; end
-
-  class SerializationError < BackgroundDeliveryError; end
-
-  class QueueError < BackgroundDeliveryError; end
 end
