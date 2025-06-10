@@ -2,7 +2,7 @@
 
 API-powered email delivery for Ruby apps.
 
-![A cute cartoon mascot wearing a blue postal uniform with red scarf and cap, carrying a leather messenger bag, representing an API-powered email delivery system for Ruby applications](https://raw.githubusercontent.com/Rails-Designer/courrier/HEAD/.github/cover.jpg)
+![A cute cartoon mascot wearing a blue postal uniform with red scarf and cap, carrying a leather messenger bag, representing an API-powered email delivery gem for Ruby apps](https://raw.githubusercontent.com/Rails-Designer/courrier/HEAD/.github/cover.jpg)
 
 ```ruby
 # Quick example
@@ -96,7 +96,7 @@ end
 class OrderEmail < Courrier::Email
   configure from: "orders@railsdesigner.com",
             cc: "records@railsdesigner.com",
-            provider: "mailgun",
+            provider: "mailgun"
 end
 ```
 
