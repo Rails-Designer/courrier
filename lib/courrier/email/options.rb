@@ -31,6 +31,21 @@ module Courrier
 
       def html = wrap(@html, with_layout: :html)
 
+      def to_h
+        {
+          from: @from,
+          to: @to,
+          reply_to: @reply_to,
+          cc: @cc,
+          bcc: @bcc,
+          subject: @subject,
+          text: @text,
+          html: @html,
+          auto_generate_text: @auto_generate_text,
+          layouts: @layouts
+        }
+      end
+
       private
 
       def wrap(content, with_layout:)
