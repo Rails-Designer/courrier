@@ -1,0 +1,43 @@
+# Usage:
+#
+# WelcomeEmail.deliver to: user.email, name: "John", login_url: "https://example.com/login"
+#
+class <%= class_name %><%= options[:skip_suffix] ? "" : "Email" %> < <%= parent_class %>
+  def subject = "Welcome to My First App, #{name}!"
+
+  def text
+    <<~TEXT
+      Welcome, #{name}!
+
+      We're excited to have you on board. Here's how to get started:
+
+      1. Log in to your account: #{login_url}
+      2. Complete your profile
+      3. Explore our features
+
+      If you have any questions, our help center is available to assist you.
+
+      Thanks for joining us!
+    TEXT
+  end
+
+  def html
+    <<~HTML
+      <p>Welcome, #{name}!</p>
+
+      <p>We're excited to have you on board. Here's how to get started:</p>
+
+      <ol>
+        <li><a href="#{login_url}">Log in to your account</a></li>
+        <li>Complete your profile</li>
+        <li>Explore our features</li>
+      </ol>
+
+      <p>If you have any questions, our help center is available to assist you.</p>
+
+      <p>
+        Thanks for joining us!
+      </p>
+    HTML
+  end
+end
