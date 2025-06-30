@@ -3,7 +3,7 @@ Courrier.configure do |config|
 
   # Choose your email delivery provider
   # Default: `logger`
-  # config.provider = ""
+  # config.provider = "" # choose from: <%= Courrier::Email::Provider::PROVIDERS.keys.join(", ") %>
 
   # Add your email provider's API key
   # config.api_key = ""

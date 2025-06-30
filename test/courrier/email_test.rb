@@ -28,6 +28,12 @@ class Courrier::EmailTest < Minitest::Test
     assert_equal "bcc@railsdesigner.com", email.options.bcc
   end
 
+  def test_enqueue_sets_queue_options
+    TestEmail.enqueue(queue: "emails", wait: 300)
+
+    assert_equal({queue: "emails", wait: 300}, TestEmail.queue_options)
+  end
+
   def test_abstract_methods_raise_error
     email = Courrier::Email.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com")
 

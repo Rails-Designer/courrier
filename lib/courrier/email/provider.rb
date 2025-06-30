@@ -16,6 +16,20 @@ require "courrier/email/providers/userlist"
 module Courrier
   class Email
     class Provider
+      PROVIDERS = {
+        inbox: Courrier::Email::Providers::Inbox,
+        logger: Courrier::Email::Providers::Logger,
+        loops: Courrier::Email::Providers::Loops,
+        mailgun: Courrier::Email::Providers::Mailgun,
+        mailjet: Courrier::Email::Providers::Mailjet,
+        mailpace: Courrier::Email::Providers::Mailpace,
+        postmark: Courrier::Email::Providers::Postmark,
+        resend: Courrier::Email::Providers::Resend,
+        sendgrid: Courrier::Email::Providers::Sendgrid,
+        sparkpost: Courrier::Email::Providers::Sparkpost,
+        userlist: Courrier::Email::Providers::Userlist
+      }
+
       def initialize(provider: nil, api_key: nil, options: {}, provider_options: {}, context_options: {})
         @provider = provider
         @api_key = api_key
@@ -37,20 +51,6 @@ module Courrier
       end
 
       private
-
-      PROVIDERS = {
-        inbox: Courrier::Email::Providers::Inbox,
-        logger: Courrier::Email::Providers::Logger,
-        loops: Courrier::Email::Providers::Loops,
-        mailgun: Courrier::Email::Providers::Mailgun,
-        mailjet: Courrier::Email::Providers::Mailjet,
-        mailpace: Courrier::Email::Providers::Mailpace,
-        postmark: Courrier::Email::Providers::Postmark,
-        resend: Courrier::Email::Providers::Resend,
-        sendgrid: Courrier::Email::Providers::Sendgrid,
-        sparkpost: Courrier::Email::Providers::Sparkpost,
-        userlist: Courrier::Email::Providers::Userlist
-      }.freeze
 
       def configuration_missing_in_production?
         production? && required_attributes_blank?

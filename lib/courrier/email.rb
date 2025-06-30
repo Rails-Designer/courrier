@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 require "courrier/email/address"
+require "courrier/jobs/email_delivery_job" if defined?(Rails)
 require "courrier/email/layouts"
 require "courrier/email/options"
 require "courrier/email/provider"
 
 module Courrier
   class Email
-    attr_accessor :provider, :api_key, :default_url_options, :options
+    attr_accessor :provider, :api_key, :default_url_options, :options, :queue_options
+
+    @queue_options = {}
 
     class << self
       %w[provider api_key from reply_to cc bcc layouts default_url_options].each do |attribute|
@@ -22,18 +25,33 @@ module Courrier
         end
       end
 
-      def deliver(options = {})
-        new(options).deliver_now
-      end
-      alias_method :deliver_now, :deliver
-
       def configure(**options)
         options.each { |key, value| send("#{key}=", value) if respond_to?("#{key}=") }
       end
       alias_method :set, :configure
 
-      def layout(options = {})
+      def queue_options
+        @queue_options ||= {}
+      end
+
+      attr_writer :queue_options
+
+      def enqueue(**options)
+        self.queue_options = options
+      end
+      alias_method :enqueue_with, :enqueue
+
+      def layout(**options)
         self.layouts = options
+      end
+
+      def deliver(**options)
+        new(options).deliver_now
+      end
+      alias_method :deliver_now, :deliver
+
+      def deliver_later(**options)
+        new(options).deliver_later
       end
 
       def inherited(subclass)
@@ -84,6 +102,30 @@ module Courrier
       ).deliver
     end
     alias_method :deliver_now, :deliver
+
+    def deliver_later
+      if delivery_disabled?
+        Courrier.configuration&.logger&.info "[Courrier] Email delivery skipped: delivery is disabled via environment variable"
+
+        return nil
+      end
+
+      data = {
+        email_class: self.class.name,
+        provider: @provider,
+        api_key: @api_key,
+        options: @options.to_h,
+        provider_options: Courrier.configuration&.providers&.[](@provider.to_s.downcase.to_sym),
+        context_options: @context_options
+      }
+
+      job = Courrier::Jobs::EmailDeliveryJob
+      job = job.set(**self.class.queue_options) if self.class.queue_options.any?
+
+      job.perform_later(data)
+    rescue => error
+      raise Courrier::BackgroundDeliveryError, "Failed to enqueue email: #{error.message}"
+    end
 
     private
 
