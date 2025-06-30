@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "courrier/email/address"
-require "courrier/jobs/email_delivery_job"
+require "courrier/jobs/email_delivery_job" if defined?(Rails)
 require "courrier/email/layouts"
 require "courrier/email/options"
 require "courrier/email/provider"
@@ -10,7 +10,7 @@ module Courrier
   class Email
     attr_accessor :provider, :api_key, :default_url_options, :options, :queue_options
 
-    class_attribute :queue_options, default: {}
+    @queue_options = {}
 
     class << self
       %w[provider api_key from reply_to cc bcc layouts default_url_options].each do |attribute|
@@ -29,6 +29,12 @@ module Courrier
         options.each { |key, value| send("#{key}=", value) if respond_to?("#{key}=") }
       end
       alias_method :set, :configure
+
+      def queue_options
+        @queue_options ||= {}
+      end
+
+      attr_writer :queue_options
 
       def enqueue(**options)
         self.queue_options = options
