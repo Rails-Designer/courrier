@@ -39,7 +39,7 @@ module Courrier
         end
 
         def prepare(content)
-          content.to_s.gsub(URI::DEFAULT_PARSER.make_regexp(%w[http https])) do |url|
+          content.to_s.gsub(URI::RFC2396_PARSER.make_regexp(%w[http https])) do |url|
             %(<a href="#{url}">#{url}</a>)
           end
         end
