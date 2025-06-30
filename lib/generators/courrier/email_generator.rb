@@ -9,7 +9,7 @@ module Courrier
     check_class_collision suffix: "Email"
 
     class_option :skip_suffix, type: :boolean, default: false
-    class_option :template, type: :string, desc: "Template type (#{AVAILABLE_TEMPLATES.join(', ')})"
+    class_option :template, type: :string, desc: "Template type (#{AVAILABLE_TEMPLATES.join(", ")})"
 
     def copy_mailer_file
       template template_file, destination_path
@@ -32,7 +32,9 @@ module Courrier
     end
 
     def template_exists?(path)
-      find_in_source_paths(path) rescue nil
+      find_in_source_paths(path)
+    rescue
+      nil
     end
   end
 end
