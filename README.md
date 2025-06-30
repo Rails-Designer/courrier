@@ -176,6 +176,17 @@ Courrier supports these transactional email providers:
 Additional functionality to help with development and testing:
 
 
+### Background Jobs (Rails only)
+
+Use `deliver_later` to enqueue delivering using Rails' ActiveJob. You can set
+various ActiveJob-supported options in the email class, like so: `enqueue queue: "emails", wait: 5.minutes`.
+
+- `queue`, enqueue the email on the specified queue;
+- `wait`, enqueue the email to be delivered with a delay;
+- `wait_until`, enqueue the email to be delivered at (after) a specific date/time;
+- `priority`, enqueues the email with the specified priority.
+
+
 ### Inbox (Rails only)
 
 You can preview your emails in the inbox:
