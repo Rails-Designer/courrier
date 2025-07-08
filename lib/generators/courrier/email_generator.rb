@@ -14,6 +14,8 @@ module Courrier
 
     private
 
+    def file_name = super.delete_suffix("_email")
+
     def parent_class = defined?(ApplicationEmail) ? ApplicationEmail : Courrier::Email
   end
 end
