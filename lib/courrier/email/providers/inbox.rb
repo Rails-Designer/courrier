@@ -2,7 +2,6 @@
 
 require "tmpdir"
 require "fileutils"
-require "uri"
 require "launchy"
 
 module Courrier
@@ -40,7 +39,7 @@ module Courrier
         end
 
         def prepare(content)
-          content.to_s.gsub(URI::RFC2396_PARSER.make_regexp(%w[http https])) do |url|
+          content.to_s.gsub(URL_PARSER.make_regexp(%w[http https])) do |url|
             %(<a href="#{url}">#{url}</a>)
           end
         end
@@ -58,6 +57,10 @@ module Courrier
 
           "available at #{path}"
         end
+
+        URL_PARSER = (
+          defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::DEFAULT_PARSER
+        )
 
         class Email < Data.define(:path, :filename, :metadata)
           Metadata = Data.define(:to, :subject)
