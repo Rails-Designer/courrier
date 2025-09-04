@@ -2,6 +2,7 @@
 
 require "tmpdir"
 require "fileutils"
+require "uri"
 require "launchy"
 
 module Courrier
