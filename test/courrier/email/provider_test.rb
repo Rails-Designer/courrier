@@ -19,6 +19,19 @@ class TestCourrierEmailProvider < Minitest::Test
     assert_match "Unknown provider", error.message
   end
 
+  def test_raises_error_for_nil_provider
+    provider = Courrier::Email::Provider.new(
+      provider: nil,
+      api_key: "test-key"
+    )
+
+    error = assert_raises(Courrier::ConfigurationError) do
+      provider.deliver
+    end
+
+    assert_match "Unknown provider", error.message
+  end
+
   def test_raises_error_in_production_without_config
     stub_rails_production
 
