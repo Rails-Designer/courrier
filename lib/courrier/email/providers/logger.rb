@@ -21,9 +21,7 @@ module Courrier
           <<~EMAIL
             #{separator}
             Timestamp: #{Time.now.strftime("%Y-%m-%d %H:%M:%S %z")}
-            From:      #{@options.from}
-            To:        #{@options.to}
-            Subject:   #{@options.subject}
+            #{meta_fields(from: options)}
 
             Text:
             #{@options.text || "(empty)"}
@@ -35,6 +33,27 @@ module Courrier
         end
 
         def separator = "-" * 80
+
+        def meta_fields(from:)
+          fields = [
+            [:from, "From"],
+            [:to, "To"],
+            [:reply_to, "Reply-To"],
+            [:cc, "Cc"],
+            [:bcc, "Bcc"],
+            [:subject, "Subject"]
+          ]
+
+          fields.map do |field, label|
+            value = from.send(field)
+
+            next if value.nil? || value.to_s.strip.empty?
+
+            "#{label}:".ljust(11) + value
+          rescue NoMatchingPatternError
+            nil
+          end.compact.join("\n")
+        end
       end
     end
   end
