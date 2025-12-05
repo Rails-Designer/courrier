@@ -33,6 +33,7 @@ module Courrier
       def initialize(provider: nil, api_key: nil, options: {}, provider_options: {}, context_options: {})
         @provider = provider
         @api_key = api_key
+
         @options = options
         @provider_options = provider_options
         @context_options = context_options
@@ -40,7 +41,7 @@ module Courrier
 
       def deliver
         raise Courrier::ConfigurationError, "`provider` and `api_key` must be configured for production environment" if configuration_missing_in_production?
-        raise Courrier::ConfigurationError, "Unknown provider. Choose one of `#{comma_separated_providers}` or provide your own." if @provider.nil? || @provider.empty?
+        raise Courrier::ConfigurationError, "Unknown provider. Choose one of `#{comma_separated_providers}` or provide your own." if @provider.nil? || @provider.to_s.strip.empty?
 
         provider_class.new(
           api_key: @api_key,
