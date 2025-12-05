@@ -17,7 +17,7 @@ module Courrier
         define_method(attribute) do
           instance_variable_get("@#{attribute}") ||
             (superclass.respond_to?(attribute) ? superclass.send(attribute) : nil) ||
-            Courrier.configuration&.send(attribute)
+            (["provider", "api_key"].include?(attribute) ? Courrier.configuration&.email&.[](attribute.to_sym) : Courrier.configuration&.send(attribute))
         end
 
         define_method("#{attribute}=") do |value|
@@ -66,8 +66,8 @@ module Courrier
     end
 
     def initialize(options = {})
-      @provider = options[:provider] || ENV["COURRIER_PROVIDER"] || self.class.provider || Courrier.configuration&.provider
-      @api_key = options[:api_key] || ENV["COURRIER_API_KEY"] || self.class.api_key || Courrier.configuration&.api_key
+      @provider = options[:provider] || ENV["COURRIER_PROVIDER"] || self.class.provider || Courrier.configuration&.email&.[](:provider)
+      @api_key = options[:api_key] || ENV["COURRIER_API_KEY"] || self.class.api_key || Courrier.configuration&.email&.[](:api_key)
 
       @default_url_options = self.class.default_url_options.merge(options[:default_url_options] || {})
       @context_options = options.except(:provider, :api_key, :from, :to, :reply_to, :cc, :bcc, :subject, :text, :html)

@@ -19,13 +19,15 @@ module Courrier
   end
 
   class Configuration
-    attr_accessor :provider, :api_key, :logger, :email_path, :layouts, :default_url_options, :auto_generate_text,
+    attr_accessor :email, :subscriber, :logger, :email_path, :layouts, :default_url_options, :auto_generate_text,
       :from, :reply_to, :cc, :bcc
+
     attr_reader :providers, :inbox
 
     def initialize
-      @provider = "logger"
-      @api_key = nil
+      @email = {provider: "logger"}
+      @subscriber = {}
+
       @logger = ::Logger.new($stdout)
       @email_path = default_email_path
 
@@ -40,6 +42,30 @@ module Courrier
 
       @providers = Courrier::Configuration::Providers.new
       @inbox = Courrier::Configuration::Inbox.new
+    end
+
+    def provider
+      warn "[DEPRECATION] `provider` is deprecated. Use `email = { provider: '…' }` instead. Will be removed in 1.0.0"
+
+      @email[:provider]
+    end
+
+    def provider=(value)
+      warn "[DEPRECATION] `provider=` is deprecated. Use `email = { provider: '…' }` instead. Will be removed in 1.0.0"
+
+      @email[:provider] = value
+    end
+
+    def api_key
+      warn "[DEPRECATION] `api_key` is deprecated. Use `email = { api_key: '…' }` instead. Will be removed in 1.0.0"
+
+      @email[:api_key]
+    end
+
+    def api_key=(value)
+      warn "[DEPRECATION] `api_key=` is deprecated. Use `email = { api_key: '…' }` instead. Will be removed in 1.0.0"
+
+      @email[:api_key] = value
     end
 
     private

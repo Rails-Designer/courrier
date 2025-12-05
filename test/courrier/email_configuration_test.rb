@@ -31,8 +31,10 @@ class Courrier::EmailConfigurationTest < Minitest::Test
 
   def test_initialization_with_configuration_defaults
     Courrier.configure do |config|
-      config.provider = "config_provider"
-      config.api_key = "config_key"
+      config.email = {
+        provider: "config_provider",
+        api_key: "config_key"
+      }
       config.from = "devs@railsdesigner.com"
       config.reply_to = "config_reply@railsdesigner.com"
       config.cc = "config_cc@railsdesigner.com"
@@ -67,8 +69,7 @@ class Courrier::EmailConfigurationTest < Minitest::Test
   end
 
   def test_class_defaults_override_configuration
-    Courrier.configure { _1.provider = "config_provider" }
-
+    Courrier.configure { _1.email = {provider: "config_provider" }}
     TestEmail.configure(provider: "class_provider")
 
     email = TestEmail.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com")
@@ -77,8 +78,7 @@ class Courrier::EmailConfigurationTest < Minitest::Test
   end
 
   def test_class_defaults_set_configuration
-    Courrier.configure { _1.provider = "config_provider" }
-
+    Courrier.configure { _1.email = {provider: "config_provider" }}
     TestEmail.set(provider: "class_provider")
 
     email = TestEmail.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com")
@@ -87,7 +87,7 @@ class Courrier::EmailConfigurationTest < Minitest::Test
   end
 
   def test_configuration_used_when_no_class_defaults
-    Courrier.configure { _1.provider = "config_provider" }
+    Courrier.configure { _1.email = {provider: "config_provider" }}
 
     email = TestEmail.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com")
 

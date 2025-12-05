@@ -1,6 +1,6 @@
 # Courrier
 
-API-powered email delivery for Ruby apps.
+API-powered email delivery and newsletter subscription management for Ruby apps
 
 ![A cute cartoon mascot wearing a blue postal uniform with red scarf and cap, carrying a leather messenger bag, representing an API-powered email delivery gem for Ruby apps](https://raw.githubusercontent.com/Rails-Designer/courrier/HEAD/.github/cover.jpg)
 
@@ -15,6 +15,9 @@ class OrderEmail < Courrier::Email
 end
 
 OrderEmail.deliver to: "recipient@railsdesigner.com"
+
+# Manage newsletter subscriptions
+Courrier::Subscriber.create "subscriber@example.com"
 ```
 
 <a href="https://railsdesigner.com/" target="_blank">
@@ -80,8 +83,11 @@ Courrier uses a configuration system with three levels (from lowest to highest p
 1. **Global configuration**
 ```ruby
 Courrier.configure do |config|
-  config.provider = "postmark"
-  config.api_key = "xyz"
+  config.email = {
+    provider: "postmark",
+    api_key: "xyz"
+  }
+
   config.from = "devs@railsdesigner.com"
   config.default_url_options = { host: "railsdesigner.com" }
 
@@ -112,7 +118,7 @@ OrderEmail.deliver to: "recipient@railsdesigner.com",\
 Provider and API key settings can be overridden using environment variables (`COURRIER_PROVIDER` and `COURRIER_API_KEY`) for both global configuration and email class defaults.
 
 
-## Custom Attributes
+## Custom attributes
 
 Besides the standard email attributes (`from`, `to`, `reply_to`, etc.), you can pass any additional attributes that will be available in your email templates:
 ```ruby
@@ -130,12 +136,12 @@ end
 ```
 
 
-## Result Object
+## Result object
 
 When sending an email through Courrier, a `Result` object is returned that provides information about the delivery attempt. This object offers a simple interface to check the status and access response data.
 
 
-### Available Methods
+### Available methods
 
 | Method | Return Type | Description |
 |:-------|:-----------|:------------|
@@ -176,7 +182,7 @@ Courrier supports these transactional email providers:
 Additional functionality to help with development and testing:
 
 
-### Background Jobs (Rails only)
+### Background jobs (Rails only)
 
 Use `deliver_later` to enqueue delivering using Rails' ActiveJob. You can set
 various ActiveJob-supported options in the email class, like so: `enqueue queue: "emails", wait: 5.minutes`.
@@ -206,7 +212,7 @@ config.inbox.auto_open = true
 Emails are automatically cleared with `bin/rails tmp:clear`, or manually with `bin/rails courrier:clear`.
 
 
-### Layout Support
+### Layout support
 
 Wrap your email content using layouts:
 ```ruby
@@ -249,7 +255,7 @@ end
 ```
 
 
-### Auto-generate Text from HTML
+### Auto-generate text from HTML
 
 Automatically generate plain text versions from your HTML emails:
 ```ruby
@@ -257,7 +263,7 @@ config.auto_generate_text = true # Defaults to false
 ```
 
 
-### Email Address Helper
+### Email address helper
 
 Compose email addresses with display names:
 ```ruby
@@ -284,16 +290,17 @@ end
 ```
 
 
-### Logger Provider
+### Logger provider
 
 Use Ruby's built-in Logger for development and testing:
 
 ```ruby
-config.provider = "logger" # Outputs emails to STDOUT
-config.logger = custom_logger # Optional: defaults to ::Logger.new($stdout)
+config.provider = "logger" # outputs emails to STDOUT
+config.logger = custom_logger # optional: defaults to ::Logger.new($stdout)
 ```
 
-### Custom Providers
+
+### Custom providers
 
 Create your own provider by inheriting from `Courrier::Email::Providers::Base`:
 ```ruby
@@ -312,6 +319,89 @@ config.provider = "CustomProvider"
 ```
 
 Check the [existing providers](https://github.com/Rails-Designer/courrier/tree/main/lib/courrier/email/providers) for implementation examples.
+
+
+## Newsletter subscriptions
+
+Manage subscribers across popular email marketing platforms:
+```ruby
+Courrier.configure do |config|
+  config.subscriber = {
+    provider: "buttondown",
+    api_key: "your_api_key"
+  }
+end
+```
+
+```ruby
+# Add a subscriber
+subscriber = Courrier::Subscriber.create "subscriber@example.com"
+
+# Remove a subscriber
+subscriber = Courrier::Subscriber.destroy "subscriber@example.com"
+
+if subscriber.success?
+  puts "Subscriber added!"
+else
+  puts "Error: #{subscriber.error}"
+end
+```
+
+
+### Supported providers
+
+- [Beehiiv](https://www.beehiiv.com/) - requires `publication_id`
+- [Buttondown](https://buttondown.com)
+- [Kit](https://kit.com/) (formerly ConvertKit) - requires `form_id`
+- [Loops](https://loops.so/)
+- [Mailchimp](https://mailchimp.com/) - requires `dc` and `list_id`
+- [MailerLite](https://www.mailerlite.com/)
+
+Provider-specific configuration:
+```ruby
+config.subscriber = {
+  provider: "mailchimp",
+  api_key: "your_api_key",
+  dc: "us19",
+  list_id: "abc123"
+}
+```
+
+### Custom providers
+
+Create custom providers by inheriting from `Courrier::Subscriber::Base`:
+```ruby
+class CustomSubscriberProvider < Courrier::Subscriber::Base
+  ENDPOINT_URL = "https://api.example.com/subscribers"
+
+  def create(email)
+    request(:post, ENDPOINT_URL, {"email" => email})
+  end
+
+  def destroy(email)
+    request(:delete, "#{ENDPOINT_URL}/#{email}")
+  end
+
+  private
+
+  def headers
+    {
+      "Authorization" => "Bearer #{@api_key}",
+      "Content-Type" => "application/json"
+    }
+  end
+end
+```
+
+Then configure it:
+```ruby
+config.subscriber = {
+  provider: CustomSubscriberProvider,
+  api_key: "your_api_key"
+}
+```
+
+See [existing providers](https://github.com/Rails-Designer/courrier/tree/main/lib/courrier/subscriber) for more examples.
 
 
 ## FAQ
