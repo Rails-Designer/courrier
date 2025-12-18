@@ -4,6 +4,7 @@ require "courrier/version"
 require "courrier/errors"
 require "courrier/configuration"
 require "courrier/email"
+require "courrier/subscriber"
 require "courrier/engine" if defined?(Rails)
 require "courrier/railtie" if defined?(Rails)
 
