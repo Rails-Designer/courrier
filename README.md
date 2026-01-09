@@ -16,8 +16,9 @@ end
 
 OrderEmail.deliver to: "recipient@railsdesigner.com"
 
-# Manage newsletter subscriptions
+# Manage newsletter subscribers
 Courrier::Subscriber.create "subscriber@example.com"
+Courrier::Subscriber.destroy "subscriber@example.com"
 ```
 
 <a href="https://railsdesigner.com/" target="_blank">
