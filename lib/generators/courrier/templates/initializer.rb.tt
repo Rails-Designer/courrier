@@ -3,13 +3,13 @@ Courrier.configure do |config|
 
   # Set your email delivery provider
   # config.email = {
-    # provider = "", # default, `logger`, choose from: <%= Courrier::Email::Provider::PROVIDERS.keys.join(", ") %>
-    # api_key = "" your transactional email provider's API key
+  #   provider: "", # default, `logger`, choose from: <%= Courrier::Email::Provider::PROVIDERS.keys.join(", ") %>
+  #   api_key: "" your transactional email provider's API key
   # }
 
   # Set your marketing email provider
   # config.subscriber = {
-    # provider = ""
+  #   provider: ""
   # }
 
 
