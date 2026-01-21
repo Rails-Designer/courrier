@@ -40,8 +40,8 @@ module Courrier
       end
 
       def deliver
-        raise Courrier::ConfigurationError, "`provider` and `api_key` must be configured for production environment" if configuration_missing_in_production?
-        raise Courrier::ConfigurationError, "Unknown provider. Choose one of `#{comma_separated_providers}` or provide your own." if @provider.nil? || @provider.to_s.strip.empty?
+        raise Courrier::ConfigurationError, "Unknown provider. Choose one of `#{comma_separated_providers}` or provide your own." if provider_invalid?
+        raise Courrier::ConfigurationError, "API key must be configured for #{@provider} provider in production environment" if configuration_missing_in_production?
 
         provider_class.new(
           api_key: @api_key,
@@ -53,8 +53,12 @@ module Courrier
 
       private
 
+      def provider_invalid?
+        @provider.nil? || @provider.to_s.strip.empty?
+      end
+
       def configuration_missing_in_production?
-        production? && required_attributes_blank?
+        production? && api_key_required_providers? && api_key_blank?
       end
 
       def comma_separated_providers = PROVIDERS.keys.join(", ")
@@ -65,7 +69,13 @@ module Courrier
         Object.const_get(@provider)
       end
 
-      def required_attributes_blank? = @api_key.empty?
+      def api_key_required_providers?
+        !%w[logger inbox].include?(@provider.to_s)
+      end
+
+      def api_key_blank?
+        @api_key.nil? || @api_key.to_s.strip.empty?
+      end
 
       def production?
         defined?(Rails) && Rails.env.production?
