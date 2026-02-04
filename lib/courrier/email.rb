@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "erb"
+
 require "courrier/email/address"
 require "courrier/jobs/email_delivery_job" if defined?(Rails)
 require "courrier/email/layouts"
@@ -133,7 +135,25 @@ module Courrier
       ENV["COURRIER_EMAIL_DISABLED"] == "true" || ENV["COURRIER_EMAIL_ENABLED"] == "false"
     end
 
-    def method_missing(name, *) = @context_options[name]
+    def method_missing(name, *)
+      if name == :text || name == :html
+        render_template(name.to_s)
+      else
+        @context_options[name]
+      end
+    end
+
+    def render_template(format)
+      template_path = template_file_path(format)
+
+      File.exist?(template_path) ? ERB.new(File.read(template_path)).result(binding) : nil
+    end
+
+    def template_file_path(format)
+      class_path = self.class.name.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
+
+      File.join(Courrier.configuration&.email_path, "#{class_path}.#{format}.erb")
+    end
 
     def respond_to_missing?(name, include_private = false) = true
   end
