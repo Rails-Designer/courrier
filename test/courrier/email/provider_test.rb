@@ -44,7 +44,7 @@ class TestCourrierEmailProvider < Minitest::Test
       provider.deliver
     end
 
-    assert_equal "`provider` and `api_key` must be configured for production environment", error.message
+    assert_equal "API key must be configured for mailgun provider in production environment", error.message
   end
 
   def test_initializes_correct_provider_class
