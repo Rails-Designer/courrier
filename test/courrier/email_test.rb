@@ -98,4 +98,50 @@ class Courrier::EmailTest < Minitest::Test
 
     assert_equal "Click here: ", email.text
   end
+
+  def test_template_rendering_with_files
+  email_path = "tmp/test_emails"
+
+  FileUtils.mkdir_p(email_path)
+  File.write("#{email_path}/test_email_with_templates.text.erb", "Hello <%= name %>!")
+  File.write("#{email_path}/test_email_with_templates.html.erb", "<p>Hello <strong><%= name %></strong>!</p>")
+
+  Courrier.configure do |config|
+    config.email_path = email_path
+  end
+
+  email = TestEmailWithTemplates.new(
+    to: "recipient@railsdesigner.com",
+    from: "devs@railsdesigner.com",
+    name: "World"
+  )
+
+  assert_equal "Hello World!", email.text
+  assert_equal "<p>Hello <strong>World</strong>!</p>", email.html
+
+  FileUtils.rm_rf(email_path)
+end
+
+def test_method_takes_precedence_over_template
+  email_path = "tmp/test_emails"
+
+  FileUtils.mkdir_p(email_path)
+  File.write("#{email_path}/test_email_with_mixed_content.text.erb", "Template text")
+  File.write("#{email_path}/test_email_with_mixed_content.html.erb", "<p>Template HTML</p>")
+
+  Courrier.configure do |config|
+    config.email_path = email_path
+  end
+
+  email = TestEmailWithMixedContent.new(
+    to: "recipient@railsdesigner.com",
+    from: "devs@railsdesigner.com"
+  )
+
+  assert_equal "Method text", email.text
+  assert_equal "<p>Template HTML</p>", email.html
+
+  FileUtils.rm_rf(email_path)
+end
+
 end
