@@ -256,6 +256,39 @@ end
 ```
 
 
+### Template files
+
+Instead of defining `text` and `html` methods, you can create ERB template files:
+```ruby
+class OrderEmail < Courrier::Email
+  def subject = "Your order is ready!"
+  # text and html content will be loaded from template files
+end
+```
+
+Create template files alongside your email class:
+- `app/emails/order_email.text.erb`
+- `app/emails/order_email.html.erb`
+
+Templates have access to all context options and instance variables:
+```erb
+<!-- app/emails/order_email.html.erb -->
+<h1>Hello <%= name %>!</h1>
+<p>Your order #<%= order_id %> is ready for pickup.</p>
+```
+
+Method definitions take precedence over template files when both exist. You can mix approaches. For example, define text in a method and use a template for the html:
+```ruby
+class OrderEmail < Courrier::Email
+  def subject = "Your order is ready!"
+
+  def text = "Hello #{name}! Your order ##{order_id} is ready."
+
+  # html will be loaded from app/emails/order_email.html.erb
+end
+```
+
+
 ### Auto-generate text from HTML
 
 Automatically generate plain text versions from your HTML emails:
