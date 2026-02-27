@@ -74,8 +74,6 @@ end
 # OrderEmail.deliver to: "recipient@railsdesigner.com"
 ```
 
-💡 Write your email content using the [Minimal Email Editor](https://railsdesigner.com/minimal-email-editor/).
-
 
 ## Configuration
 
@@ -447,10 +445,7 @@ Yes! While different in approach, Courrier can fully replace ActionMailer. It's 
 Not at all! While Courrier has some Rails-specific goodies (like the inbox preview feature and generators), it works great with any Ruby application.
 
 ### Can it send using SMTP?
-No - Courrier is specifically built for API-based email delivery. If SMTP is needed, ActionMailer would be a better choices.
-
-### Can separate view templates be created (like ActionMailer)?
-The approach is different here. Instead of separate view files, email content is defined right in the email class using `text` and `html` methods. Layouts can be used to share common templates. This makes emails more self-contained and easier to reason about.
+No. Courrier is specifically built for API-based email delivery. If SMTP is needed, ActionMailer would be a better choices.
 
 ### What's the main benefit over ActionMailer?
 Courrier offers a simpler, more modern approach to sending emails. Each email is a standalone class, configuration is straightforward (typically just only an API key is needed) and it packs few quality-of-life features (like the inbox feature and auto-generate text version).
