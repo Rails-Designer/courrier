@@ -38,9 +38,7 @@ class Courrier::EmailTest < Minitest::Test
     email = Courrier::Email.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com")
 
     assert_nil email.subject
-
     assert_nil email.text
-
     assert_nil email.html
   end
 
@@ -100,48 +98,98 @@ class Courrier::EmailTest < Minitest::Test
   end
 
   def test_template_rendering_with_files
-  email_path = "tmp/test_emails"
+    email_path = "tmp/test_emails"
 
-  FileUtils.mkdir_p(email_path)
-  File.write("#{email_path}/test_email_with_templates.text.erb", "Hello <%= name %>!")
-  File.write("#{email_path}/test_email_with_templates.html.erb", "<p>Hello <strong><%= name %></strong>!</p>")
+    FileUtils.mkdir_p(email_path)
+    File.write("#{email_path}/test_email_with_templates.text.erb", "Hello <%= name %>!")
+    File.write("#{email_path}/test_email_with_templates.html.erb", "<p>Hello <strong><%= name %></strong>!</p>")
 
-  Courrier.configure do |config|
-    config.email_path = email_path
+    Courrier.configure do |config|
+      config.email_path = email_path
+    end
+
+    email = TestEmailWithTemplates.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      name: "World"
+    )
+
+    assert_equal "Hello World!", email.text
+    assert_equal "<p>Hello <strong>World</strong>!</p>", email.html
+
+    FileUtils.rm_rf(email_path)
   end
 
-  email = TestEmailWithTemplates.new(
-    to: "recipient@railsdesigner.com",
-    from: "devs@railsdesigner.com",
-    name: "World"
-  )
+  def test_method_takes_precedence_over_template
+    email_path = "tmp/test_emails"
 
-  assert_equal "Hello World!", email.text
-  assert_equal "<p>Hello <strong>World</strong>!</p>", email.html
+    FileUtils.mkdir_p(email_path)
+    File.write("#{email_path}/test_email_with_mixed_content.text.erb", "Template text")
+    File.write("#{email_path}/test_email_with_mixed_content.html.erb", "<p>Template HTML</p>")
 
-  FileUtils.rm_rf(email_path)
-end
+    Courrier.configure do |config|
+      config.email_path = email_path
+    end
 
-def test_method_takes_precedence_over_template
-  email_path = "tmp/test_emails"
+    email = TestEmailWithMixedContent.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com"
+    )
 
-  FileUtils.mkdir_p(email_path)
-  File.write("#{email_path}/test_email_with_mixed_content.text.erb", "Template text")
-  File.write("#{email_path}/test_email_with_mixed_content.html.erb", "<p>Template HTML</p>")
+    assert_equal "Method text", email.text
+    assert_equal "<p>Template HTML</p>", email.html
 
-  Courrier.configure do |config|
-    config.email_path = email_path
+    FileUtils.rm_rf(email_path)
   end
 
-  email = TestEmailWithMixedContent.new(
-    to: "recipient@railsdesigner.com",
-    from: "devs@railsdesigner.com"
-  )
+  def test_markdown_method_renders_when_gem_available
+    with_mocked_markdown do
+      email = EmailWithMarkdown.new(
+        to: "recipient@railsdesigner.com",
+        from: "devs@railsdesigner.com",
+        name: "World"
+      )
 
-  assert_equal "Method text", email.text
-  assert_equal "<p>Template HTML</p>", email.html
+      expected = "<p># Hello World!\n\nOrder **123** is ready.\n</p>"
+      assert_equal expected, email.html
+    end
+  end
 
-  FileUtils.rm_rf(email_path)
-end
+  def test_markdown_template_renders_when_gem_available
+    with_mocked_markdown do
+      email_path = "tmp/test_emails"
 
+      FileUtils.mkdir_p(email_path)
+      File.write("#{email_path}/email_with_markdown_template.md.erb", "Hello <%= name %>!")
+
+      Courrier.configure do |config|
+        config.email_path = email_path
+      end
+
+      email = EmailWithMarkdownTemplate.new(
+        to: "recipient@railsdesigner.com",
+        from: "devs@railsdesigner.com",
+        name: "World"
+      )
+
+      assert_equal "<p>Hello World!</p>", email.html
+
+      FileUtils.rm_rf(email_path)
+    end
+  end
+
+  private
+
+  def with_mocked_markdown
+    original_available = Courrier::Markdown.method(:available?)
+    original_render = Courrier::Markdown.method(:render)
+
+    Courrier::Markdown.define_singleton_method(:available?) { true }
+    Courrier::Markdown.define_singleton_method(:render) { |text| "<p>#{text}</p>" }
+
+    yield
+  ensure
+    Courrier::Markdown.define_singleton_method(:available?, original_available)
+    Courrier::Markdown.define_singleton_method(:render, original_render)
+  end
 end
