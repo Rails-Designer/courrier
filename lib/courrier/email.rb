@@ -5,6 +5,7 @@ require "erb"
 require "courrier/email/address"
 require "courrier/jobs/email_delivery_job" if defined?(Rails)
 require "courrier/email/layouts"
+require "courrier/markdown"
 require "courrier/email/options"
 require "courrier/email/provider"
 
@@ -137,7 +138,9 @@ module Courrier
 
     def method_missing(name, *)
       if name == :text || name == :html
-        render_template(name.to_s)
+        render_template(name.to_s).tap do |result|
+          return result || markdown_rendered if name == :html
+        end
       else
         @context_options[name]
       end
@@ -147,6 +150,23 @@ module Courrier
       template_path = template_file_path(format)
 
       File.exist?(template_path) ? ERB.new(File.read(template_path)).result(binding) : nil
+    end
+
+    def render_markdown_template
+      %w[md markdown].each do |ext|
+        template_path = template_file_path(ext)
+
+        return ERB.new(File.read(template_path)).result(binding) if File.exist?(template_path)
+      end
+
+      nil
+    end
+
+    def markdown_rendered
+      return unless Courrier::Markdown.available?
+
+      markdown_content = render_markdown_template || (respond_to?(:markdown, true) ? markdown : nil)
+      Courrier::Markdown.render(markdown_content) if markdown_content
     end
 
     def template_file_path(format)

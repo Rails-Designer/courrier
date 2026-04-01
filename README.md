@@ -287,6 +287,53 @@ end
 ```
 
 
+## Markdown support
+
+Courrier supports rendering markdown content to HTML when a markdown gem is available. Simply bundle any supported markdown gem (`redcarpet`, `kramdown` or `commonmarker`) and it will be used.
+
+
+### Markdown methods
+
+Define a `markdown` method in your email class:
+```ruby
+class OrderEmail < Courrier::Email
+  def subject = "Your order is ready!"
+
+  def markdown
+    <<~MARKDOWN
+      # Hello #{name}!
+
+      Your order **##{order_id}** is ready for pickup.
+
+      ## Order Details
+      - Item: #{item_name}
+      - Price: #{price}
+    MARKDOWN
+  end
+end
+```
+
+
+### Markdown templates
+
+Create markdown template files alongside your email class:
+- `app/emails/order_email.md.erb`
+- `app/emails/order_email.markdown.erb`
+
+```erb
+<!-- app/emails/order_email.md.erb -->
+# Hello <%= name %>!
+
+Your order **#<%= order_id %>** is ready for pickup.
+
+## Order Details
+- Item: <%= item_name %>
+- Price: <%= price %>
+```
+
+Method definitions take precedence over template files. You can mix approaches. For example, define `text` in a method and use a markdown template for HTML content.
+
+
 ### Auto-generate text from HTML
 
 Automatically generate plain text versions from your HTML emails:
