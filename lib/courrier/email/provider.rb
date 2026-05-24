@@ -30,13 +30,14 @@ module Courrier
         userlist: Courrier::Email::Providers::Userlist
       }
 
-      def initialize(provider: nil, api_key: nil, options: {}, provider_options: {}, context_options: {})
+      def initialize(provider: nil, api_key: nil, options: {}, provider_options: {}, context_options: {}, custom_headers: {})
         @provider = provider
         @api_key = api_key
 
         @options = options
         @provider_options = provider_options
         @context_options = context_options
+        @custom_headers = custom_headers
       end
 
       def deliver
@@ -47,7 +48,8 @@ module Courrier
           api_key: @api_key,
           options: @options,
           provider_options: @provider_options,
-          context_options: @context_options
+          context_options: @context_options,
+          custom_headers: @custom_headers
         ).deliver
       end
 

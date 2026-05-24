@@ -44,4 +44,28 @@ class Courrier::Email::Providers::BaseTest < Minitest::Test
       assert_instance_of Courrier::Email::Result, result
     end
   end
+
+  def test_headers_merges_custom_headers_with_default_headers
+    provider = Courrier::Email::Providers::TestProvider.new(
+      api_key: "test_key",
+      options: {},
+      custom_headers: {"foo_bar" => "baz", "Authorization" => "override"}
+    )
+
+    headers = provider.send(:headers)
+
+    assert_equal "baz", headers["foo_bar"]
+    assert_equal "override", headers["Authorization"]
+  end
+
+  def test_headers_returns_only_default_headers_when_no_custom_headers
+    provider = Courrier::Email::Providers::TestProvider.new(
+      api_key: "test_key",
+      options: {}
+    )
+
+    headers = provider.send(:headers)
+
+    assert_equal({}, headers)
+  end
 end

@@ -117,6 +117,23 @@ OrderEmail.deliver to: "recipient@railsdesigner.com",\
 Provider and API key settings can be overridden using environment variables (`COURRIER_PROVIDER` and `COURRIER_API_KEY`) for both global configuration and email class defaults.
 
 
+## Custom headers
+
+Email classes can define custom HTTP headers that are sent with every email:
+```ruby
+class OrderEmail < Courrier::Email
+  headers list_unsubscribe_post: "List-Unsubscribe=One-Click"
+
+  def subject = "Rails Icons now supports SVG sprites!"
+
+  def text = # …
+  def markdown = # …
+end
+```
+
+Useful for adding provider-specific headers like List-Unsubscribe for Postmark, X-Mailer identifiers, or custom metadata headers required.
+
+
 ## Custom attributes
 
 Besides the standard email attributes (`from`, `to`, `reply_to`, etc.), you can pass any additional attributes that will be available in your email templates:

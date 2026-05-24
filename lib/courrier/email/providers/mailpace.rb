@@ -21,7 +21,7 @@ module Courrier
 
         private
 
-        def headers
+        def default_headers
           {
             "MailPace-Server-Token" => @api_key
           }

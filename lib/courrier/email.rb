@@ -37,7 +37,11 @@ module Courrier
         @queue_options ||= {}
       end
 
-      attr_writer :queue_options
+      attr_writer :queue_options, :headers
+
+      def headers(**options)
+        options.empty? ? (@headers ||= {}) : @headers = options
+      end
 
       def enqueue(**options)
         self.queue_options = options
@@ -101,7 +105,8 @@ module Courrier
         api_key: @api_key,
         options: @options,
         provider_options: Courrier.configuration&.providers&.[](@provider.to_s.downcase.to_sym),
-        context_options: @context_options
+        context_options: @context_options,
+        custom_headers: self.class.headers
       ).deliver
     end
     alias_method :deliver_now, :deliver

@@ -27,7 +27,7 @@ module Courrier
 
         private
 
-        def headers
+        def default_headers
           {
             "Authorization" => @api_key
           }
