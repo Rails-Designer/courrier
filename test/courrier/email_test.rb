@@ -184,11 +184,19 @@ class Courrier::EmailTest < Minitest::Test
     original_available = Courrier::Markdown.method(:available?)
     original_render = Courrier::Markdown.method(:render)
 
+    class << Courrier::Markdown
+      remove_method(:available?)
+      remove_method(:render)
+    end
     Courrier::Markdown.define_singleton_method(:available?) { true }
     Courrier::Markdown.define_singleton_method(:render) { |text| "<p>#{text}</p>" }
 
     yield
   ensure
+    class << Courrier::Markdown
+      remove_method(:available?)
+      remove_method(:render)
+    end
     Courrier::Markdown.define_singleton_method(:available?, original_available)
     Courrier::Markdown.define_singleton_method(:render, original_render)
   end

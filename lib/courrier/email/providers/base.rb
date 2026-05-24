@@ -6,11 +6,12 @@ module Courrier
   class Email
     module Providers
       class Base
-        def initialize(api_key: nil, options: {}, provider_options: {}, context_options: {})
+        def initialize(api_key: nil, options: {}, provider_options: {}, context_options: {}, custom_headers: {})
           @api_key = api_key
           @options = options
           @provider_options = provider_options
           @context_options = context_options
+          @custom_headers = custom_headers
         end
 
         def deliver
@@ -31,7 +32,11 @@ module Courrier
 
         def content_type = "application/json"
 
-        def headers = {}
+        def headers
+          default_headers.merge(@custom_headers)
+        end
+
+        def default_headers = {}
 
         def provider = self.class.name.split("::").last
       end
