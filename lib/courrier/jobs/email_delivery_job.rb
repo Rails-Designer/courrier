@@ -15,7 +15,7 @@ module Courrier
           cc: data[:options][:cc],
           bcc: data[:options][:bcc],
           provider_options: data[:provider_options],
-          context_options: data[:context_options]
+          **(data[:context_options] || {})
         ).deliver_now
       end
     end

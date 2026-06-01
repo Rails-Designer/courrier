@@ -2,7 +2,7 @@ require "test_helper"
 require "courrier/email/provider"
 
 class TestCourrierEmailProvider < Minitest::Test
-  def setup
+  def teardown
     Object.send(:remove_const, :Rails) if defined?(Rails)
   end
 
