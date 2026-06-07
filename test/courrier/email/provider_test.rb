@@ -3,7 +3,7 @@ require "courrier/email/provider"
 
 class TestCourrierEmailProvider < Minitest::Test
   def teardown
-    Object.send(:remove_const, :Rails) if defined?(Rails)
+    ENV.delete("RACK_ENV")
   end
 
   def test_raises_error_for_empty_provider
@@ -33,7 +33,7 @@ class TestCourrierEmailProvider < Minitest::Test
   end
 
   def test_raises_error_in_production_without_config
-    stub_rails_production
+    stub_production
 
     provider = Courrier::Email::Provider.new(
       provider: "mailgun",
@@ -49,7 +49,6 @@ class TestCourrierEmailProvider < Minitest::Test
 
   def test_initializes_correct_provider_class
     provider_classes = {
-      inbox: Courrier::Email::Providers::Inbox,
       logger: Courrier::Email::Providers::Logger,
       loops: Courrier::Email::Providers::Loops,
       mailgun: Courrier::Email::Providers::Mailgun,
@@ -118,13 +117,7 @@ class TestCourrierEmailProvider < Minitest::Test
 
   private
 
-  def stub_rails_production
-    rails = Module.new
-    environment = Minitest::Mock.new
-
-    environment.expect(:production?, true)
-    rails.define_singleton_method(:env) { environment }
-
-    Object.const_set(:Rails, rails)
+  def stub_production
+    ENV["RACK_ENV"] = "production"
   end
 end

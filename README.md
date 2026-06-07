@@ -38,21 +38,23 @@ Add the gem:
 ```bash
 bundle add courrier
 ```
+> [!tip]
+> For **Rails** apps, use [`rails_courrier`](https://github.com/Rails-Designer/courrier) instead. It includes generators, ActiveJob support (`deliver_later`), inbox previews and more.
 
-Generate the configuration file:
-```bash
-bin/rails generate courrier:install
+Configure Courrier in your app:
+```ruby
+Courrier.configure do |config|
+  config.email = {
+    provider: "postmark",
+    api_key: "your-api-key"
+  }
+
+  config.from = "devs@example.com"
+end
 ```
-
-This creates `config/initializers/courrier.rb` for configuring email providers and default settings.
 
 
 ## Usage
-
-Generate a new email:
-```bash
-bin/rails generate courrier:email Order
-```
 
 ```ruby
 class OrderEmail < Courrier::Email
@@ -127,11 +129,12 @@ class OrderEmail < Courrier::Email
   def subject = "Rails Icons now supports SVG sprites!"
 
   def text = # …
-  def markdown = # …
+
+  def html = # …
 end
 ```
 
-Useful for adding provider-specific headers like List-Unsubscribe for Postmark, X-Mailer identifiers, or custom metadata headers required.
+Useful for adding provider-specific headers like List-Unsubscribe for Postmark, X-Mailer identifiers or custom metadata headers required.
 
 
 ## Custom attributes
@@ -139,7 +142,7 @@ Useful for adding provider-specific headers like List-Unsubscribe for Postmark, 
 Besides the standard email attributes (`from`, `to`, `reply_to`, etc.), you can pass any additional attributes that will be available in your email templates:
 ```ruby
 OrderEmail.deliver to: "recipient@railsdesigner.com",\
-                   download_url: downloads_path(token: "token")
+                   download_url: "https://example.com/download?token=abc123"
 ```
 
 These custom attributes are accessible directly in your email class:
@@ -170,7 +173,7 @@ When sending an email through Courrier, a `Result` object is returned that provi
 ### Example
 
 ```ruby
-delivery = OrderEmail.deliver(to: "recipient@example.com")
+delivery = OrderEmail.deliver to: "recipient@example.com"
 
 if delivery.success?
   puts "Email sent successfully!"
@@ -196,36 +199,6 @@ Courrier supports these transactional email providers:
 ## More Features
 
 Additional functionality to help with development and testing:
-
-
-### Background jobs (Rails only)
-
-Use `deliver_later` to enqueue delivering using Rails' ActiveJob. You can set
-various ActiveJob-supported options in the email class, like so: `enqueue queue: "emails", wait: 5.minutes`.
-
-- `queue`, enqueue the email on the specified queue;
-- `wait`, enqueue the email to be delivered with a delay;
-- `wait_until`, enqueue the email to be delivered at (after) a specific date/time;
-- `priority`, enqueues the email with the specified priority.
-
-
-### Inbox (Rails only)
-
-You can preview your emails in the inbox:
-```ruby
-config.provider = "inbox"
-
-# And add to your routes:
-mount Courrier::Engine => "/courrier"
-```
-
-If you want to automatically open every email in your default browser:
-```ruby
-config.provider = "inbox"
-config.inbox.auto_open = true
-```
-
-Emails are automatically cleared with `bin/rails tmp:clear`, or manually with `bin/rails courrier:clear`.
 
 
 ### Layout support
@@ -277,17 +250,18 @@ Instead of defining `text` and `html` methods, you can create ERB template files
 ```ruby
 class OrderEmail < Courrier::Email
   def subject = "Your order is ready!"
+
   # text and html content will be loaded from template files
 end
 ```
 
-Create template files alongside your email class:
-- `app/emails/order_email.text.erb`
-- `app/emails/order_email.html.erb`
+Create template files alongside your email class (default path is `courrier/emails`):
+- `courrier/emails/order_email.text.erb`
+- `courrier/emails/order_email.html.erb`
 
 Templates have access to all context options and instance variables:
 ```erb
-<!-- app/emails/order_email.html.erb -->
+<!-- courrier/emails/order_email.html.erb -->
 <h1>Hello <%= name %>!</h1>
 <p>Your order #<%= order_id %> is ready for pickup.</p>
 ```
@@ -299,7 +273,7 @@ class OrderEmail < Courrier::Email
 
   def text = "Hello #{name}! Your order ##{order_id} is ready."
 
-  # html will be loaded from app/emails/order_email.html.erb
+  # html will be loaded from courrier/emails/order_email.html.erb
 end
 ```
 
@@ -333,12 +307,12 @@ end
 
 ### Markdown templates
 
-Create markdown template files alongside your email class:
-- `app/emails/order_email.md.erb`
-- `app/emails/order_email.markdown.erb`
+Create markdown template files alongside your email class (default path is `courrier/emails`):
+- `courrier/emails/order_email.md.erb`
+- `courrier/emails/order_email.markdown.erb`
 
 ```erb
-<!-- app/emails/order_email.md.erb -->
+<!-- courrier/emails/order_email.md.erb -->
 # Hello <%= name %>!
 
 Your order **#<%= order_id %>** is ready for pickup.
@@ -355,24 +329,13 @@ Method definitions take precedence over template files. You can mix approaches. 
 
 Automatically generate plain text versions from your HTML emails:
 ```ruby
-config.auto_generate_text = true # Defaults to false
+config.auto_generate_text = true  # defaults to false
 ```
 
 
 ### Email address helper
 
 Compose email addresses with display names:
-```ruby
-class SignupsController < ApplicationController
-  def create
-    recipient = email_with_name("devs@railsdesigner.com", "Rails Designer Devs")
-
-    WelcomeEmail.deliver to: recipient
-  end
-end
-```
-
-In Plain Ruby Objects:
 ```ruby
 class Signup
   include Courrier::Email::Address
@@ -391,8 +354,8 @@ end
 Use Ruby's built-in Logger for development and testing:
 
 ```ruby
-config.provider = "logger" # outputs emails to STDOUT
-config.logger = custom_logger # optional: defaults to ::Logger.new($stdout)
+config.provider = "logger"  # outputs emails to STDOUT
+config.logger = custom_logger  # optional: defaults to ::Logger.new($stdout)
 ```
 
 
@@ -463,6 +426,7 @@ config.subscriber = {
 }
 ```
 
+
 ### Custom providers
 
 Create custom providers by inheriting from `Courrier::Subscriber::Base`:
@@ -502,17 +466,11 @@ See [existing providers](https://github.com/Rails-Designer/courrier/tree/main/li
 
 ## FAQ
 
-### Is this a replacement for ActionMailer?
-Yes! While different in approach, Courrier can fully replace ActionMailer. It's a modern alternative that focuses on API-based delivery. The main difference is in how emails are structured - Courrier uses a more straightforward, class-based approach.
-
 ### Is this for Rails only?
-Not at all! While Courrier has some Rails-specific goodies (like the inbox preview feature and generators), it works great with any Ruby application.
+Not at all! Courrier works with any Ruby application. For Rails apps, use [`rails_courrier`](https://github.com/Rails-Designer/rails_courrier).
 
 ### Can it send using SMTP?
-No. Courrier is specifically built for API-based email delivery. If SMTP is needed, ActionMailer would be a better choices.
-
-### What's the main benefit over ActionMailer?
-Courrier offers a simpler, more modern approach to sending emails. Each email is a standalone class, configuration is straightforward (typically just only an API key is needed) and it packs few quality-of-life features (like the inbox feature and auto-generate text version).
+No. Courrier is specifically built for API-based email delivery.
 
 
 ## Contributing

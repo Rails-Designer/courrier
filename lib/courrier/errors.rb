@@ -8,6 +8,4 @@ module Courrier
   class ArgumentError < ::ArgumentError; end
 
   class NotImplementedError < ::NotImplementedError; end
-
-  class BackgroundDeliveryError < StandardError; end
 end
