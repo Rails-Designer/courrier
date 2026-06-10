@@ -11,30 +11,30 @@ module Courrier
 
       def to_text
         Nokogiri::HTML(@content)
-          .then { remove_unwanted_elements(_1) }
-          .then { process_links(_1) }
-          .then { preserve_line_breaks(_1) }
-          .then { clean_up(_1) }
+          .then { remove_unwanted_elements(it) }
+          .then { process_links(it) }
+          .then { preserve_line_breaks(it) }
+          .then { clean_up(it) }
       end
 
       private
 
       BLOCK_ELEMENTS = %w[p div h1 h2 h3 h4 h5 h6 pre blockquote li]
 
-      def remove_unwanted_elements(html) = html.tap { _1.css("script, style").remove }
+      def remove_unwanted_elements(html) = html.tap { it.css("script, style").remove }
 
       def process_links(html)
         html.tap do |document|
           document.css("a")
-            .select { valid?(_1) }
-            .reject { _1.text.strip.empty? || _1.text.strip == _1["href"] }
-            .each { _1.content = "#{_1.text.strip} (#{_1["href"]})" }
+            .select { valid?(it) }
+            .reject { it.text.strip.empty? || it.text.strip == it["href"] }
+            .each { it.content = "#{it.text.strip} (#{it["href"]})" }
         end
       end
 
       def preserve_line_breaks(html)
         html.tap do |document|
-          document.css(BLOCK_ELEMENTS.join(",")).each { _1.after("\n") }
+          document.css(BLOCK_ELEMENTS.join(",")).each { it.after("\n") }
         end
       end
 

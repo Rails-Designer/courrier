@@ -5,7 +5,7 @@ source "https://rubygems.org"
 gemspec
 
 group :development do
-  gem "standard", "~> 1.49"
+  gem "standard", "~> 1.54.0"
 end
 
 group :development, :test do

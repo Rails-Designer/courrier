@@ -25,7 +25,7 @@ module Courrier
         options = {use_ssl: uri.scheme == "https"}
 
         begin
-          response = Net::HTTP.start(uri.hostname, uri.port, options) { _1.request(request) }
+          response = Net::HTTP.start(uri.hostname, uri.port, options) { it.request(request) }
 
           Result.new(response: response)
         rescue => error
