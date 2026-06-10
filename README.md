@@ -39,7 +39,7 @@ Add the gem:
 bundle add courrier
 ```
 > [!tip]
-> For **Rails** apps, use [`rails_courrier`](https://github.com/Rails-Designer/courrier) instead. It includes generators, ActiveJob support (`deliver_later`), inbox previews and more.
+> For **Rails** apps, use [`rails_courrier`](https://github.com/Rails-Designer/rails_courrier) instead. It includes generators, ActiveJob support (`deliver_later`), inbox previews and more.
 
 Configure Courrier in your app:
 ```ruby
