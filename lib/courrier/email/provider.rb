@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "courrier/email/providers/base"
-require "courrier/email/providers/inbox"
 require "courrier/email/providers/logger"
 require "courrier/email/providers/loops"
 require "courrier/email/providers/mailgun"
@@ -17,7 +16,6 @@ module Courrier
   class Email
     class Provider
       PROVIDERS = {
-        inbox: Courrier::Email::Providers::Inbox,
         logger: Courrier::Email::Providers::Logger,
         loops: Courrier::Email::Providers::Loops,
         mailgun: Courrier::Email::Providers::Mailgun,
@@ -72,7 +70,7 @@ module Courrier
       end
 
       def api_key_required_providers?
-        !%w[logger inbox].include?(@provider.to_s)
+        !%w[logger].include?(@provider.to_s)
       end
 
       def api_key_blank?
@@ -80,7 +78,7 @@ module Courrier
       end
 
       def production?
-        defined?(Rails) && Rails.env.production?
+        ENV["RACK_ENV"] == "production"
       end
     end
   end

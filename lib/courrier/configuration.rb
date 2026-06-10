@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "courrier/configuration/inbox"
 require "courrier/configuration/providers"
 
 module Courrier
@@ -22,7 +21,7 @@ module Courrier
     attr_accessor :email, :subscriber, :logger, :email_path, :layouts, :default_url_options, :auto_generate_text,
       :from, :reply_to, :cc, :bcc
 
-    attr_reader :providers, :inbox
+    attr_reader :providers
 
     def initialize
       @email = {provider: "logger"}
@@ -41,7 +40,6 @@ module Courrier
       @bcc = nil
 
       @providers = Courrier::Configuration::Providers.new
-      @inbox = Courrier::Configuration::Inbox.new
     end
 
     def provider
@@ -71,7 +69,7 @@ module Courrier
     private
 
     def default_email_path
-      defined?(Rails) ? Rails.root.join("app", "emails").to_s : File.join("courrier", "emails")
+      File.join("courrier", "emails")
     end
   end
 end
