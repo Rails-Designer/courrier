@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Courrier
-  module TestMode
+  module Test
     Delivery = Data.define(:email_class, :to, :from, :reply_to, :cc, :bcc, :subject, :body, :headers, :provider, :result, :timestamp) do
       def success?
         result.success?

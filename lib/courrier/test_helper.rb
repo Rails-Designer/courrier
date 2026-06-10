@@ -3,7 +3,7 @@
 module Courrier
   module TestHelper
     def assert_emails_delivered(count)
-      actual = TestMode.deliveries.size
+      actual = Test.deliveries.size
 
       assert_equal count, actual, "Expected #{count} email(s) to be delivered, but #{actual} were delivered"
     end
@@ -13,7 +13,7 @@ module Courrier
     end
 
     def assert_email_delivered(email_class = nil, to: nil, from: nil, subject: nil, provider: nil)
-      deliveries = TestMode.deliveries
+      deliveries = Test.deliveries
 
       matching = deliveries.find do |delivery|
         match_email_class(email_class, delivery.email_class) &&

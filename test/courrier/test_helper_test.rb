@@ -10,11 +10,11 @@ class Courrier::TestHelperTest < Minitest::Test
     reset_test_email_class
     reset_configuration
 
-    Courrier::TestMode.clear!
+    Courrier::Test.clear!
   end
 
   def teardown
-    Courrier::TestMode.clear!
+    Courrier::Test.clear!
   end
 
   def test_assert_emails_delivered_passes_with_correct_count

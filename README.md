@@ -382,15 +382,15 @@ Check the [existing providers](https://github.com/Rails-Designer/courrier/tree/m
 
 ### Testing
 
-Courrier provides `TestMode` and `TestHelper` for testing email delivery, similar to Action Mailer's testing API.
+Courrier provides `Test` and `TestHelper` for testing email delivery, similar to Action Mailer's testing API.
 
 Access all delivered emails:
 ```ruby
 # Clear deliveries between tests
-Courrier::TestMode.clear!
+Courrier::Test.clear!
 
 # Access all deliveries
-Courrier::TestMode.deliveries
+Courrier::Test.deliveries
 ```
 
 Each delivery record contains:
@@ -410,7 +410,7 @@ class OrderTest < Minitest::Test
   include Courrier::TestHelper
 
   def setup
-    Courrier::TestMode.clear!
+    Courrier::Test.clear!
   end
 
   def test_sends_confirmation_email

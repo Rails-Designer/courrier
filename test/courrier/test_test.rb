@@ -2,21 +2,21 @@
 
 require "test_helper"
 
-class Courrier::TestModeTest < Minitest::Test
+class Courrier::TestTest < Minitest::Test
   include TestEmailHelpers
 
   def setup
     reset_test_email_class
     reset_configuration
-    Courrier::TestMode.clear!
+    Courrier::Test.clear!
   end
 
   def teardown
-    Courrier::TestMode.clear!
+    Courrier::Test.clear!
   end
 
   def test_deliveries_starts_empty
-    assert_empty Courrier::TestMode.deliveries
+    assert_empty Courrier::Test.deliveries
   end
 
   def test_clear_resets_deliveries
@@ -24,11 +24,11 @@ class Courrier::TestModeTest < Minitest::Test
       TestEmail.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com").deliver
     end
 
-    assert_equal 1, Courrier::TestMode.deliveries.size
+    assert_equal 1, Courrier::Test.deliveries.size
 
-    Courrier::TestMode.clear!
+    Courrier::Test.clear!
 
-    assert_empty Courrier::TestMode.deliveries
+    assert_empty Courrier::Test.deliveries
   end
 
   def test_records_delivery
@@ -36,7 +36,7 @@ class Courrier::TestModeTest < Minitest::Test
       TestEmail.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com").deliver
     end
 
-    delivery = Courrier::TestMode.deliveries.first
+    delivery = Courrier::Test.deliveries.first
     assert_equal "TestEmail", delivery.email_class
     assert_equal "recipient@railsdesigner.com", delivery.to
     assert_equal "devs@railsdesigner.com", delivery.from
@@ -51,7 +51,7 @@ class Courrier::TestModeTest < Minitest::Test
       end
     end
 
-    assert_equal 3, Courrier::TestMode.deliveries.size
+    assert_equal 3, Courrier::Test.deliveries.size
   end
 
   private
