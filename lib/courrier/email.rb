@@ -96,7 +96,7 @@ module Courrier
         provider_options: Courrier.configuration&.providers&.[](@provider.to_s.downcase.to_sym),
         context_options: @context_options,
         custom_headers: self.class.headers
-      ).deliver
+      ).deliver.tap { Test.record(self, it) }
     end
     alias_method :deliver_now, :deliver
 

@@ -5,6 +5,8 @@ require "courrier/errors"
 require "courrier/configuration"
 require "courrier/email"
 require "courrier/subscriber"
+require "courrier/test"
+require "courrier/test_helper"
 
 module Courrier
 end

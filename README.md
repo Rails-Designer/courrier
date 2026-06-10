@@ -380,6 +380,64 @@ config.provider = "CustomProvider"
 Check the [existing providers](https://github.com/Rails-Designer/courrier/tree/main/lib/courrier/email/providers) for implementation examples.
 
 
+### Testing
+
+Courrier provides `Test` and `TestHelper` for testing email delivery, similar to Action Mailer's testing API.
+
+Access all delivered emails:
+```ruby
+# Clear deliveries between tests
+Courrier::Test.clear!
+
+# Access all deliveries
+Courrier::Test.deliveries
+```
+
+Each delivery record contains:
+
+- `email_class`; the email class name
+- `to`, `from`, `reply_to`, `cc`, `bcc`; email addresses
+- `subject`; email subject
+- `body` - Hash with `:text` and `:html` keys
+- `headers`; custom headers
+- `provider`; provider used
+- `result`; result object with `success?` method
+- `timestamp`; delivery time
+
+Include the helper in your test class for assertions:
+```ruby
+class OrderTest < Minitest::Test
+  include Courrier::TestHelper
+
+  def setup
+    Courrier::Test.clear!
+  end
+
+  def test_sends_confirmation_email
+    order = Order.create! product: "Widget", customer_email: "customer@example.com"
+
+    OrderEmail.deliver to: order.customer_email, order: order
+
+    assert_emails_delivered 1
+    assert_email_delivered to: "customer@example.com"
+    assert_email_delivered OrderEmail, subject: "Order"
+  end
+
+  def test_no_emails_when_order_cancelled
+    order = Order.create! product: "Widget", status: :cancelled
+
+    assert_no_emails_delivered
+  end
+end
+```
+
+Available assertions:
+
+- `assert_emails_delivered(count)`; assert the number of emails delivered
+- `assert_no_emails_delivered`; assert no emails were delivered
+- `assert_email_delivered(email_class, to:, from:, subject:, provider:)`; assert an email matching criteria was delivered
+
+
 ## Newsletter subscriptions
 
 Manage subscribers across popular email marketing platforms:
