@@ -3,7 +3,6 @@
 require "erb"
 
 require "courrier/email/address"
-require "courrier/jobs/email_delivery_job" if defined?(Rails)
 require "courrier/email/layouts"
 require "courrier/markdown"
 require "courrier/email/options"
@@ -57,18 +56,8 @@ module Courrier
       end
       alias_method :deliver_now, :deliver
 
-      def deliver_later(**options)
-        new(options).deliver_later
-      end
-
       def inherited(subclass)
         super
-
-        # If you read this and know how to move this Rails-specific logic somewhere
-        # else, e.g. `lib/courrier/railtie.rb`, open a PR ❤️
-        if defined?(Rails) && Rails.application
-          subclass.include Rails.application.routes.url_helpers
-        end
       end
     end
 
@@ -110,30 +99,6 @@ module Courrier
       ).deliver.tap { |delivery| TestMode.record(self, delivery) }
     end
     alias_method :deliver_now, :deliver
-
-    def deliver_later
-      if delivery_disabled?
-        Courrier.configuration&.logger&.info "[Courrier] Email delivery skipped: delivery is disabled via environment variable"
-
-        return nil
-      end
-
-      data = {
-        email_class: self.class.name,
-        provider: @provider,
-        api_key: @api_key,
-        options: @options.to_h,
-        provider_options: Courrier.configuration&.providers&.[](@provider.to_s.downcase.to_sym)&.to_h,
-        context_options: @context_options
-      }
-
-      job = Courrier::Jobs::EmailDeliveryJob
-      job = job.set(**self.class.queue_options) if self.class.queue_options.any?
-
-      job.perform_later(data)
-    rescue => error
-      raise Courrier::BackgroundDeliveryError, "Failed to enqueue email: #{error.message}"
-    end
 
     private
 

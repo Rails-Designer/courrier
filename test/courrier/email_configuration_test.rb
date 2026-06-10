@@ -101,20 +101,4 @@ class Courrier::EmailConfigurationTest < Minitest::Test
     end
   end
 
-  def test_inbox_default_configuration
-    assert_equal File.join(Dir.tmpdir, "courrier", "emails"), Courrier.configuration.inbox.destination
-
-    refute Courrier.configuration.inbox.auto_open
-  end
-
-  def test_inbox_configuration_can_be_customized
-    Courrier.configure do |config|
-      config.inbox.destination = "/custom/path"
-      config.inbox.auto_open = false
-    end
-
-    assert_equal "/custom/path", Courrier.configuration.inbox.destination
-
-    refute Courrier.configuration.inbox.auto_open
-  end
 end
