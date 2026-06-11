@@ -6,6 +6,8 @@ module TestEmailHelpers
     TestEmail.reply_to = nil
     TestEmail.cc = nil
     TestEmail.bcc = nil
+    TestEmail.instance_variable_set(:@before_deliver, nil)
+    TestEmail.instance_variable_set(:@after_deliver, nil)
   end
 
   def reset_configuration

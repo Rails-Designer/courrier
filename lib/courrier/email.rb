@@ -51,6 +51,22 @@ module Courrier
         self.layouts = options
       end
 
+      def before_deliver(&block)
+        (@before_deliver ||= []) << block
+      end
+
+      def after_deliver(&block)
+        (@after_deliver ||= []) << block
+      end
+
+      def before_deliver_callbacks
+        @before_deliver || []
+      end
+
+      def after_deliver_callbacks
+        @after_deliver || []
+      end
+
       def deliver(**options)
         new(options).deliver_now
       end
@@ -89,6 +105,8 @@ module Courrier
         return nil
       end
 
+      return nil if self.class.before_deliver_callbacks.any? { |callback| callback.call(self) == false }
+
       Provider.new(
         provider: @provider,
         api_key: @api_key,
@@ -96,7 +114,11 @@ module Courrier
         provider_options: Courrier.configuration&.providers&.[](@provider.to_s.downcase.to_sym),
         context_options: @context_options,
         custom_headers: self.class.headers
-      ).deliver.tap { Test.record(self, it) }
+      ).deliver.tap do |result|
+        Test.record(self, result)
+
+        self.class.after_deliver_callbacks.each { |callback| callback.call(self, result) }
+      end
     end
     alias_method :deliver_now, :deliver
 
