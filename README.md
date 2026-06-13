@@ -95,6 +95,10 @@ Courrier.configure do |config|
   # Provider-specific configuration
   config.providers.loops.transactional_id = "default-template"
   config.providers.mailgun.domain = "notifications.railsdesigner.com"
+
+  config.providers.ses.region = "us-east-1"
+  config.providers.ses.access_key_id = "your-access-key-id"
+  config.providers.ses.secret_access_key = "your-secret-access-key"
 end
 ```
 
@@ -188,11 +192,14 @@ end
 
 Courrier supports these transactional email providers:
 
+- [AWS SES](https://aws.amazon.com/ses/) — requires `aws-sigv4` gem
 - [Loops](https://loops.so)
 - [Mailgun](https://mailgun.com)
 - [MailPace](https://mailpace.com)
 - [Postmark](https://postmarkapp.com)
 - [Resend](https://resend.com)
+- [SendGrid](https://sendgrid.com)
+- [SparkPost](https://www.sparkpost.com/)
 - [Userlist](https://userlist.com)
 
 
