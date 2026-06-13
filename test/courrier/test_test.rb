@@ -8,11 +8,14 @@ class Courrier::TestTest < Minitest::Test
   def setup
     reset_test_email_class
     reset_configuration
+
     Courrier::Test.clear!
   end
 
   def teardown
     Courrier::Test.clear!
+
+    reset_configuration
   end
 
   def test_deliveries_starts_empty

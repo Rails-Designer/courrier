@@ -2,10 +2,12 @@ module TestEmailHelpers
   def reset_test_email_class
     TestEmail.provider = nil
     TestEmail.api_key = nil
+
     TestEmail.from = nil
     TestEmail.reply_to = nil
     TestEmail.cc = nil
     TestEmail.bcc = nil
+
     TestEmail.instance_variable_set(:@before_deliver, nil)
     TestEmail.instance_variable_set(:@after_deliver, nil)
   end
@@ -13,6 +15,8 @@ module TestEmailHelpers
   def reset_configuration
     Courrier.configuration = Courrier::Configuration.new
   end
+
+  def teardown = reset_configuration
 
   def create_mock_provider
     mock_provider = Object.new

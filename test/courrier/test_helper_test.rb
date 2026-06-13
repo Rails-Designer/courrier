@@ -15,6 +15,8 @@ class Courrier::TestHelperTest < Minitest::Test
 
   def teardown
     Courrier::Test.clear!
+
+    reset_configuration
   end
 
   def test_assert_emails_delivered_passes_with_correct_count
