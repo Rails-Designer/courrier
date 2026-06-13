@@ -195,6 +195,7 @@ Courrier supports these transactional email providers:
 
 - [AWS SES](https://aws.amazon.com/ses/) — requires `aws-sigv4` gem
 - [Cloudflare Email Service](https://developers.cloudflare.com/email-service/)
+- [Lettermint](https://lettermint.co)
 - [Loops](https://loops.so)
 - [Mailgun](https://mailgun.com)
 - [MailPace](https://mailpace.com)

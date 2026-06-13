@@ -2,8 +2,8 @@
 
 require "courrier/email/providers/base"
 require "courrier/email/providers/cloudflare"
+require "courrier/email/providers/lettermint"
 require "courrier/email/providers/logger"
-require "courrier/email/providers/smtp2go"
 require "courrier/email/providers/loops"
 require "courrier/email/providers/mailgun"
 require "courrier/email/providers/mailjet"
@@ -12,6 +12,7 @@ require "courrier/email/providers/postmark"
 require "courrier/email/providers/resend"
 require "courrier/email/providers/ses"
 require "courrier/email/providers/sendgrid"
+require "courrier/email/providers/smtp2go"
 require "courrier/email/providers/sparkpost"
 require "courrier/email/providers/userlist"
 
@@ -21,6 +22,7 @@ module Courrier
       PROVIDERS = {
         cloudflare: Courrier::Email::Providers::Cloudflare,
         logger: Courrier::Email::Providers::Logger,
+        lettermint: Courrier::Email::Providers::Lettermint,
         loops: Courrier::Email::Providers::Loops,
         mailgun: Courrier::Email::Providers::Mailgun,
         mailjet: Courrier::Email::Providers::Mailjet,
