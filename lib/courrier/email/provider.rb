@@ -3,6 +3,7 @@
 require "courrier/email/providers/base"
 require "courrier/email/providers/cloudflare"
 require "courrier/email/providers/logger"
+require "courrier/email/providers/smtp2go"
 require "courrier/email/providers/loops"
 require "courrier/email/providers/mailgun"
 require "courrier/email/providers/mailjet"
@@ -28,6 +29,7 @@ module Courrier
         resend: Courrier::Email::Providers::Resend,
         ses: Courrier::Email::Providers::Ses,
         sendgrid: Courrier::Email::Providers::Sendgrid,
+        smtp2go: Courrier::Email::Providers::Smtp2go,
         sparkpost: Courrier::Email::Providers::Sparkpost,
         userlist: Courrier::Email::Providers::Userlist
       }

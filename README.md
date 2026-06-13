@@ -201,6 +201,7 @@ Courrier supports these transactional email providers:
 - [Postmark](https://postmarkapp.com)
 - [Resend](https://resend.com)
 - [SendGrid](https://sendgrid.com)
+- [SMTP2GO](https://www.smtp2go.com/)
 - [SparkPost](https://www.sparkpost.com/)
 - [Userlist](https://userlist.com)
 
