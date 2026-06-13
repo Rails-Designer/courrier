@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "courrier/email/providers/base"
+require "courrier/email/providers/cloudflare"
 require "courrier/email/providers/logger"
 require "courrier/email/providers/loops"
 require "courrier/email/providers/mailgun"
@@ -17,6 +18,7 @@ module Courrier
   class Email
     class Provider
       PROVIDERS = {
+        cloudflare: Courrier::Email::Providers::Cloudflare,
         logger: Courrier::Email::Providers::Logger,
         loops: Courrier::Email::Providers::Loops,
         mailgun: Courrier::Email::Providers::Mailgun,

@@ -93,6 +93,7 @@ Courrier.configure do |config|
   config.default_url_options = { host: "railsdesigner.com" }
 
   # Provider-specific configuration
+  config.providers.cloudflare.account_id = "your-account-id"
   config.providers.loops.transactional_id = "default-template"
   config.providers.mailgun.domain = "notifications.railsdesigner.com"
 
@@ -193,6 +194,7 @@ end
 Courrier supports these transactional email providers:
 
 - [AWS SES](https://aws.amazon.com/ses/) — requires `aws-sigv4` gem
+- [Cloudflare Email Service](https://developers.cloudflare.com/email-service/)
 - [Loops](https://loops.so)
 - [Mailgun](https://mailgun.com)
 - [MailPace](https://mailpace.com)
