@@ -27,7 +27,7 @@ module Courrier
         end
 
         def default_headers
-          { "Authorization" => "Bearer #{@api_key}" }
+          {"Authorization" => "Bearer #{@api_key}"}
         end
       end
     end

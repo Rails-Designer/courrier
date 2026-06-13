@@ -21,7 +21,7 @@ module Courrier
         private
 
         def default_headers
-          { "X-Smtp2go-Api-Key" => @api_key }
+          {"X-Smtp2go-Api-Key" => @api_key}
         end
       end
     end
