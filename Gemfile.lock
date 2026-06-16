@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    courrier (0.10.0)
+    courrier (0.11.0)
       logger (>= 1.5, < 3)
       nokogiri (>= 1.18, < 2)
 
