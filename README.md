@@ -370,27 +370,6 @@ config.logger = custom_logger  # optional: defaults to ::Logger.new($stdout)
 ```
 
 
-### Custom providers
-
-Create your own provider by inheriting from `Courrier::Email::Providers::Base`:
-```ruby
-class CustomProvider < Courrier::Email::Providers::Base
-  ENDPOINT_URL = ""
-
-  def body = ""
-
-  def headers = ""
-end
-```
-
-Then configure it:
-```ruby
-config.provider = "CustomProvider"
-```
-
-Check the [existing providers](https://github.com/Rails-Designer/courrier/tree/main/lib/courrier/email/providers) for implementation examples.
-
-
 ### Testing
 
 Courrier provides `Test` and `TestHelper` for testing email delivery, similar to Action Mailer's testing API.
@@ -465,6 +444,61 @@ end
 ```
 
 Callbacks are isolated per class (subclasses don't inherit parent callbacks).
+
+
+### Preview classes
+
+Preview your emails during development without sending them. Define named scenarios inline on your email class with sample data:
+```ruby
+class WelcomeEmail < Courrier::Email
+  preview :default, to: "test@example.com", name: "John Doe"
+  preview :with_code, to: "test@example.com", name: "Jane", code: "WELCOME20"
+
+  preview :random do
+    user = User.all.sample
+    { to: user.email, name: user.name }
+  end
+
+  def subject = "Welcome, #{name}!"
+  def html = "<h1>Hello #{name}</h1>"
+end
+```
+
+Render previews programmatically:
+
+```ruby
+result = Courrier::Preview.render("WelcomeEmail", :default)
+result.subject  # => "Welcome, John Doe!"
+result.html  # => "<h1>Hello John Doe</h1>"
+result.text  # => nil (auto-generated if auto_generate_text is enabled)
+result.from  # => "sender@example.com" (inherits class/global config)
+result.to  # => "test@example.com"
+```
+
+Static params via keyword args or dynamic params via a block — both are passed to `Email.new(**params)`. Class-level and global config (like `from`) are inherited automatically.
+
+
+### Custom providers
+
+Create your own provider by inheriting from `Courrier::Email::Providers::Base`:
+```ruby
+class CustomProvider < Courrier::Email::Providers::Base
+  ENDPOINT_URL = ""
+
+  def body = ""
+
+  def headers = ""
+end
+```
+
+Then configure it:
+```ruby
+config.provider = "CustomProvider"
+```
+
+Check the [existing providers](https://github.com/Rails-Designer/courrier/tree/main/lib/courrier/email/providers) for implementation examples.
+
+
 
 
 ## Newsletter subscriptions

@@ -51,6 +51,23 @@ module Courrier
         self.layouts = options
       end
 
+      def preview(name = nil, **params, &block)
+        if params.any? || block
+          raise ArgumentError, "Preview name is required" unless name
+
+          @previews ||= {}
+          @previews[name.to_sym] = block || -> { params }
+        elsif name
+          Courrier::Preview.render(self.name, name)
+        else
+          raise ArgumentError, "Provide a scenario name, e.g. `#{self.name}.preview(:#{previews.keys.first})`"
+        end
+      end
+
+      def previews
+        @previews || {}
+      end
+
       def before_deliver(&block)
         (@before_deliver ||= []) << block
       end
