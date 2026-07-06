@@ -345,6 +345,24 @@ config.auto_generate_text = true  # defaults to false
 ```
 
 
+### Delivery callbacks
+
+Hook into the email delivery lifecycle with `before_deliver` and `after_deliver` callbacks:
+```ruby
+class OrderEmail < Courrier::Email
+  before_deliver do |email|
+    puts "Sending to #{email.options.to}"  # access email options, abort delivery by returning false
+  end
+
+  after_deliver do |email, result|
+    puts "Delivered: #{result.success?}"  # access email and delivery result
+  end
+end
+```
+
+Callbacks are isolated per class (subclasses don't inherit parent callbacks).
+
+
 ### Email address helper
 
 Compose email addresses with display names:
@@ -448,24 +466,6 @@ Available assertions:
 - `assert_emails_delivered(count)`; assert the number of emails delivered
 - `assert_no_emails_delivered`; assert no emails were delivered
 - `assert_email_delivered(email_class, to:, from:, subject:, provider:)`; assert an email matching criteria was delivered
-
-
-### Delivery callbacks
-
-Hook into the email delivery lifecycle with `before_deliver` and `after_deliver` callbacks:
-```ruby
-class OrderEmail < Courrier::Email
-  before_deliver do |email|
-    puts "Sending to #{email.options.to}"  # access email options, abort delivery by returning false
-  end
-
-  after_deliver do |email, result|
-    puts "Delivered: #{result.success?}"  # access email and delivery result
-  end
-end
-```
-
-Callbacks are isolated per class (subclasses don't inherit parent callbacks).
 
 
 ## Newsletter subscriptions
