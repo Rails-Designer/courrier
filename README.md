@@ -291,7 +291,7 @@ end
 
 ## Markdown support
 
-Courrier supports rendering markdown content to HTML when a markdown gem is available. Simply bundle any supported markdown gem (`redcarpet`, `kramdown` or `commonmarker`) and it will be used.
+Courrier supports rendering markdown to HTML. Bundle any supported markdown gem (`redcarpet`, `kramdown` or `commonmarker`) and it will be used.
 
 
 ### Markdown methods
