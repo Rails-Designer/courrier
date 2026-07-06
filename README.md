@@ -470,7 +470,7 @@ Available assertions:
 
 ## Newsletter subscriptions
 
-Manage subscribers across popular email marketing platforms:
+Use Courrier to manage subscribers across popular email marketing platforms:
 ```ruby
 Courrier.configure do |config|
   config.subscriber = {
