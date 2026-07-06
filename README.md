@@ -209,7 +209,7 @@ Courrier supports these transactional email providers:
 
 ## More Features
 
-Additional functionality to help with development and testing:
+Additional functionality to go beyond the basics:
 
 
 ### Layout support
