@@ -212,49 +212,6 @@ Courrier supports these transactional email providers:
 Additional functionality to go beyond the basics:
 
 
-### Layout support
-
-Wrap your email content using layouts:
-```ruby
-class OrderEmail < Courrier::Email
- layout text: "%{content}\n\nThanks for your order!",
-        html: "<div>\n%{content}\n</div>"
-end
-```
-
-Using a method:
-```ruby
-class OrderEmail < Courrier::Email
-  layout html: :html_layout
-
-  def html_layout
-    <<~HTML
-      <div style='font-family: ui-sans-serif, system-ui;'>
-        %{content}
-      </div>
-    HTML
-  end
-end
-```
-
-Using a separate class:
-```ruby
-class OrderEmail < Courrier::Email
-  layout html: OrderLayout
-end
-
-class OrderLayout
-  self.call
-    <<~HTML
-      <div style='font-family: ui-sans-serif, system-ui;'>
-        %{content}
-      </div>
-    HTML
-  end
-end
-```
-
-
 ### Template files
 
 Instead of defining `text` and `html` methods, you can create ERB template files:
@@ -334,6 +291,49 @@ Your order **#<%= order_id %>** is ready for pickup.
 ```
 
 Method definitions take precedence over template files. You can mix approaches. For example, define `text` in a method and use a markdown template for HTML content.
+
+
+### Layout support
+
+Wrap your email content using layouts:
+```ruby
+class OrderEmail < Courrier::Email
+ layout text: "%{content}\n\nThanks for your order!",
+        html: "<div>\n%{content}\n</div>"
+end
+```
+
+Using a method:
+```ruby
+class OrderEmail < Courrier::Email
+  layout html: :html_layout
+
+  def html_layout
+    <<~HTML
+      <div style='font-family: ui-sans-serif, system-ui;'>
+        %{content}
+      </div>
+    HTML
+  end
+end
+```
+
+Using a separate class:
+```ruby
+class OrderEmail < Courrier::Email
+  layout html: OrderLayout
+end
+
+class OrderLayout
+  self.call
+    <<~HTML
+      <div style='font-family: ui-sans-serif, system-ui;'>
+        %{content}
+      </div>
+    HTML
+  end
+end
+```
 
 
 ### Auto-generate text from HTML
