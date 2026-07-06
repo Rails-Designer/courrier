@@ -216,6 +216,7 @@ Additional functionality to go beyond the basics:
 
 Instead of defining `text` and `html` methods, you can create ERB template files:
 ```ruby
+# courrier/emails/order_email.rb
 class OrderEmail < Courrier::Email
   def subject = "Your order is ready!"
 
