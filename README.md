@@ -124,7 +124,7 @@ OrderEmail.deliver to: "recipient@railsdesigner.com",\
 
 ## Custom headers
 
-Email classes can define custom HTTP headers that are sent with every email:
+Email classes can define custom headers that are sent with every email:
 ```ruby
 class OrderEmail < Courrier::Email
   headers list_unsubscribe_post: "List-Unsubscribe=One-Click"
