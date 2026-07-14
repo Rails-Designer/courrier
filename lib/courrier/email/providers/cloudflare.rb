@@ -4,6 +4,8 @@ module Courrier
   class Email
     module Providers
       class Cloudflare < Base
+        def self.config_options = %w[account_id]
+
         def body
           {
             "from" => @options.from,

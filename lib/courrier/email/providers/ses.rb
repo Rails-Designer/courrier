@@ -4,6 +4,8 @@ module Courrier
   class Email
     module Providers
       class Ses < Base
+        def self.config_options = %w[region access_key_id secret_access_key session_token]
+
         def deliver
           uri = URI.parse("https://email.#{@provider_options[:region]}.amazonaws.com/v2/email/outbound-emails")
 

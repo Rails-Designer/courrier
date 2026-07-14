@@ -4,6 +4,8 @@ module Courrier
   class Email
     module Providers
       class Mailgun < Base
+        def self.config_options = %w[domain]
+
         ENDPOINT_URL = "https://api.mailgun.net/v3/%{domain}/messages"
 
         def body

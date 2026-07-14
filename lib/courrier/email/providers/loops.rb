@@ -4,6 +4,8 @@ module Courrier
   class Email
     module Providers
       class Loops < Base
+        def self.config_options = %w[transactional_id]
+
         ENDPOINT_URL = "https://app.loops.so/api/v1/transactional"
 
         def body

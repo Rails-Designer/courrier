@@ -4,6 +4,8 @@ module Courrier
   class Email
     module Providers
       class Mailjet < Base
+        def self.config_options = %w[api_secret]
+
         ENDPOINT_URL = "https://api.mailjet.com/v3.1/send"
 
         def body

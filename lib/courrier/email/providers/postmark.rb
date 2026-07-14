@@ -4,6 +4,8 @@ module Courrier
   class Email
     module Providers
       class Postmark < Base
+        def self.config_options = %w[message_stream]
+
         ENDPOINT_URL = "https://api.postmarkapp.com/email"
 
         def body
