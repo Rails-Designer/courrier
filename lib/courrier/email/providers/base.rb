@@ -6,6 +6,8 @@ module Courrier
   class Email
     module Providers
       class Base
+        def self.config_options = []
+
         def initialize(api_key: nil, options: {}, provider_options: {}, context_options: {}, custom_headers: {})
           @api_key = api_key
           @options = options

@@ -4,6 +4,8 @@ module Courrier
   class Email
     module Providers
       class Userlist < Base
+        def self.config_options = %w[theme]
+
         ENDPOINT_URL = "https://push.userlist.com/messages"
 
         def body

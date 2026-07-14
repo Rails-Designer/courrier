@@ -4,6 +4,8 @@ module Courrier
   class Email
     module Providers
       class Lettermint < Base
+        def self.config_options = %w[route]
+
         ENDPOINT_URL = "https://api.lettermint.co/v1/send"
 
         def body
