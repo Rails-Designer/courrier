@@ -384,7 +384,7 @@ end
 Use Ruby's built-in Logger for development and testing:
 
 ```ruby
-config.provider = "logger"  # outputs emails to STDOUT
+config.email = { provider: "logger" }  # outputs emails to STDOUT
 config.logger = custom_logger  # optional: defaults to ::Logger.new($stdout)
 ```
 
@@ -404,7 +404,7 @@ end
 
 Then configure it:
 ```ruby
-config.provider = "CustomProvider"
+config.email = { provider: "CustomProvider" }
 ```
 
 Check the [existing providers](https://github.com/Rails-Designer/courrier/tree/main/lib/courrier/email/providers) for implementation examples.
