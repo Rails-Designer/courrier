@@ -42,30 +42,6 @@ module Courrier
       @providers = Courrier::Configuration::Providers.new
     end
 
-    def provider
-      warn "[DEPRECATION] `provider` is deprecated. Use `email = { provider: '…' }` instead. Will be removed in 1.0.0"
-
-      @email[:provider]
-    end
-
-    def provider=(value)
-      warn "[DEPRECATION] `provider=` is deprecated. Use `email = { provider: '…' }` instead. Will be removed in 1.0.0"
-
-      @email[:provider] = value
-    end
-
-    def api_key
-      warn "[DEPRECATION] `api_key` is deprecated. Use `email = { api_key: '…' }` instead. Will be removed in 1.0.0"
-
-      @email[:api_key]
-    end
-
-    def api_key=(value)
-      warn "[DEPRECATION] `api_key=` is deprecated. Use `email = { api_key: '…' }` instead. Will be removed in 1.0.0"
-
-      @email[:api_key] = value
-    end
-
     private
 
     def default_email_path
