@@ -111,22 +111,36 @@ class Courrier::EmailCallbacksTest < Minitest::Test
     assert_instance_of TestEmail, received_email
   end
 
-  def test_callbacks_isolated_to_registered_class
-    parent_count = 0
-    child_count = 0
+  def test_inherits_parent_callbacks_when_no_child_callbacks_defined
+    parent_callbacks = 0
 
-    TestEmail.before_deliver { parent_count += 1 }
+    TestEmail.before_deliver { parent_callbacks += 1 }
 
     child_class = Class.new(TestEmail)
-    child_class.before_deliver { child_count += 1 }
 
     mock_provider = create_mock_provider
     Courrier::Email::Provider.stub :new, mock_provider do
-      TestEmail.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com").deliver
       child_class.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com").deliver
     end
 
-    assert_equal 1, parent_count
-    assert_equal 1, child_count
+    assert_equal 1, parent_callbacks
+  end
+
+  def test_child_callbacks_override_parent_callbacks
+    child_callbacks = 0
+    parent_callbacks = 0
+
+    TestEmail.before_deliver { parent_callbacks += 1 }
+
+    child_class = Class.new(TestEmail)
+    child_class.before_deliver { child_callbacks += 1 }
+
+    mock_provider = create_mock_provider
+    Courrier::Email::Provider.stub :new, mock_provider do
+      child_class.new(from: "devs@railsdesigner.com", to: "recipient@railsdesigner.com").deliver
+    end
+
+    assert_equal 1, child_callbacks
+    assert_equal 0, parent_callbacks
   end
 end

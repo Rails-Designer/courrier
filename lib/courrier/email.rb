@@ -60,11 +60,17 @@ module Courrier
       end
 
       def before_deliver_callbacks
-        @before_deliver || []
+        return @before_deliver if @before_deliver
+        return superclass.before_deliver_callbacks if superclass.respond_to?(:before_deliver_callbacks)
+
+        []
       end
 
       def after_deliver_callbacks
-        @after_deliver || []
+        return @after_deliver if @after_deliver
+        return superclass.after_deliver_callbacks if superclass.respond_to?(:after_deliver_callbacks)
+
+        []
       end
 
       def deliver(**options)
