@@ -358,8 +358,6 @@ class OrderEmail < Courrier::Email
 end
 ```
 
-Callbacks are isolated per class (subclasses don't inherit parent callbacks).
-
 
 ### Email address helper
 
