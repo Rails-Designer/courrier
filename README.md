@@ -121,8 +121,6 @@ OrderEmail.deliver to: "recipient@railsdesigner.com",\
 ```
 
 
-Provider and API key settings can be overridden using environment variables (`COURRIER_PROVIDER` and `COURRIER_API_KEY`) for both global configuration and email class defaults.
-
 
 ## Custom headers
 
