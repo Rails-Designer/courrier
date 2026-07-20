@@ -1,4 +1,4 @@
-ruby_version: 4.0
+ruby_version: 3.4
 ignore:
   - "tmp/**/*"
   - "test/**/*"
