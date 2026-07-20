@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "courrier/email/providers/base"
+require "courrier/email/providers/brevo"
 require "courrier/email/providers/cloudflare"
 require "courrier/email/providers/lettermint"
 require "courrier/email/providers/logger"
@@ -20,6 +21,7 @@ module Courrier
   class Email
     class Provider
       PROVIDERS = {
+        brevo: Courrier::Email::Providers::Brevo,
         cloudflare: Courrier::Email::Providers::Cloudflare,
         logger: Courrier::Email::Providers::Logger,
         lettermint: Courrier::Email::Providers::Lettermint,

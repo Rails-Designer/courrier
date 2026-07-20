@@ -192,6 +192,7 @@ end
 Courrier supports these transactional email providers:
 
 - [AWS SES](https://aws.amazon.com/ses/) — requires `aws-sigv4` gem
+- [Brevo](https://www.brevo.com/)
 - [Cloudflare Email Service](https://developers.cloudflare.com/email-service/)
 - [Lettermint](https://lettermint.co)
 - [Loops](https://loops.so)
@@ -494,6 +495,7 @@ end
 ### Supported providers
 
 - [Beehiiv](https://www.beehiiv.com/) - requires `publication_id`
+- [Brevo](https://www.brevo.com/) - accepts optional `list_ids`
 - [Buttondown](https://buttondown.com)
 - [Kit](https://kit.com/) (formerly ConvertKit) - requires `form_id`
 - [Loops](https://loops.so/)
@@ -510,6 +512,14 @@ config.subscriber = {
 }
 ```
 
+For Brevo, pass one or more list IDs when new contacts should be added to specific lists:
+```ruby
+config.subscriber = {
+  provider: "brevo",
+  api_key: "your_api_key",
+  list_ids: [12, 34]
+}
+```
 
 ### Custom providers
 
