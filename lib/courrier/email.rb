@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require "erb"
-
+require "courrier/email/rendering"
 require "courrier/email/address"
 require "courrier/email/layouts"
-require "courrier/markdown"
 require "courrier/email/options"
 require "courrier/email/provider"
 
 module Courrier
   class Email
+    include Rendering
+
     attr_accessor :provider, :api_key, :default_url_options, :options, :queue_options
 
     @queue_options = {}
@@ -97,7 +97,7 @@ module Courrier
           bcc: options[:bcc] || self.class.bcc || Courrier.configuration&.bcc,
           subject: subject,
           text: text,
-          html: html,
+          html: in_html_context { html },
           auto_generate_text: Courrier.configuration&.auto_generate_text,
           layouts: Courrier::Email::Layouts.new(self).build
         )
@@ -133,46 +133,5 @@ module Courrier
     def delivery_disabled?
       ENV["COURRIER_EMAIL_DISABLED"] == "true" || ENV["COURRIER_EMAIL_ENABLED"] == "false"
     end
-
-    def method_missing(name, *)
-      if name == :text || name == :html
-        render_template(name.to_s).tap do |result|
-          return result || markdown_rendered if name == :html
-        end
-      else
-        @context_options[name]
-      end
-    end
-
-    def render_template(format)
-      template_path = template_file_path(format)
-
-      File.exist?(template_path) ? ERB.new(File.read(template_path)).result(binding) : nil
-    end
-
-    def render_markdown_template
-      %w[md markdown].each do |ext|
-        template_path = template_file_path(ext)
-
-        return ERB.new(File.read(template_path)).result(binding) if File.exist?(template_path)
-      end
-
-      nil
-    end
-
-    def markdown_rendered
-      return unless Courrier::Markdown.available?
-
-      markdown_content = render_markdown_template || (respond_to?(:markdown, true) ? markdown : nil)
-      Courrier::Markdown.render(markdown_content) if markdown_content
-    end
-
-    def template_file_path(format)
-      class_path = self.class.name.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
-
-      File.join(Courrier.configuration&.email_path, "#{class_path}.#{format}.erb")
-    end
-
-    def respond_to_missing?(name, include_private = false) = true
   end
 end

@@ -15,9 +15,9 @@ module Courrier
         @cc = options.fetch(:cc, nil)
         @bcc = options.fetch(:bcc, nil)
 
-        @subject = options.fetch(:subject, "")
-        @text = options.fetch(:text, "")
-        @html = options.fetch(:html, "")
+        @subject = options.fetch(:subject, "").to_s
+        @text = options.fetch(:text, "").to_s
+        @html = options.fetch(:html, "").to_s
 
         @auto_generate_text = options.fetch(:auto_generate_text, false)
 

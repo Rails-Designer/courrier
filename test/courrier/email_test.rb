@@ -178,6 +178,151 @@ class Courrier::EmailTest < Minitest::Test
     end
   end
 
+  def test_subject_and_text_context_options_are_not_escaped
+    email = TestEmailWithContext.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      order_id: "R&D <5",
+      token: "abc"
+    )
+
+    assert_equal "Order R&D <5", email.subject
+    assert_equal "Test order R&D <5 with token abc", email.text
+  end
+
+  def test_html_context_options_are_escaped
+    email = TestEmailWithHtml.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      order_id: "<script>alert('xss')</script>"
+    )
+
+    assert_equal "<p>Order &lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;</p>", email.options.html
+  end
+
+  def test_html_safe_attribute_is_not_escaped
+    email = TestEmailWithSafeAttribute.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      order_id: "<script>alert('xss')</script>"
+    )
+
+    assert_equal "<p><script>alert('xss')</script></p>", email.options.html
+  end
+
+  def test_h_attribute_is_not_escaped
+    email = TestEmailWithHAttribute.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      order_id: "<script>alert('xss')</script>"
+    )
+
+    assert_equal "<p><script>alert('xss')</script></p>", email.options.html
+  end
+
+  def test_html_safe_block_is_not_escaped
+    email = TestEmailWithSafeBlock.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      order_id: "<script>alert('xss')</script>"
+    )
+
+    assert_equal "<p>Order <script>alert('xss')</script></p>", email.options.html
+  end
+
+  def test_h_block_is_not_escaped
+    email = TestEmailWithHBlock.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      order_id: "<script>alert('xss')</script>"
+    )
+
+    assert_equal "<p>Order <script>alert('xss')</script></p>", email.options.html
+  end
+
+  def test_safe_string_is_not_escaped
+    email = TestEmailWithContext.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      order_id: Courrier::SafeString.new("<b>123</b>")
+    )
+
+    assert_equal "Order <b>123</b>", email.subject
+  end
+
+  def test_html_template_escapes_context_options
+    email_path = "tmp/test_emails"
+
+    FileUtils.mkdir_p(email_path)
+    File.write("#{email_path}/test_email_with_templates.html.erb", "<p>Hello <%= name %>!</p>")
+
+    Courrier.configure do |config|
+      config.email_path = email_path
+    end
+
+    email = TestEmailWithTemplates.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      name: "<script>alert('xss')</script>"
+    )
+
+    assert_equal "<p>Hello &lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;!</p>", email.html
+
+    FileUtils.rm_rf(email_path)
+  end
+
+  def test_html_template_with_html_safe_attribute_is_not_escaped
+    email_path = "tmp/test_emails"
+
+    FileUtils.mkdir_p(email_path)
+    File.write("#{email_path}/test_email_with_templates.html.erb", "<p>Hello <%= html_safe(name) %>!</p>")
+
+    Courrier.configure do |config|
+      config.email_path = email_path
+    end
+
+    email = TestEmailWithTemplates.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      name: "<script>alert('xss')</script>"
+    )
+
+    assert_equal "<p>Hello <script>alert('xss')</script>!</p>", email.html
+
+    FileUtils.rm_rf(email_path)
+  end
+
+  def test_html_template_with_h_attribute_is_not_escaped
+    email_path = "tmp/test_emails"
+
+    FileUtils.mkdir_p(email_path)
+    File.write("#{email_path}/test_email_with_templates.html.erb", "<p>Hello <%= h(name) %>!</p>")
+
+    Courrier.configure do |config|
+      config.email_path = email_path
+    end
+
+    email = TestEmailWithTemplates.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      name: "<script>alert('xss')</script>"
+    )
+
+    assert_equal "<p>Hello <script>alert('xss')</script>!</p>", email.html
+
+    FileUtils.rm_rf(email_path)
+  end
+
+  def test_non_string_context_options_are_not_escaped
+    email = TestEmailWithContext.new(
+      to: "recipient@railsdesigner.com",
+      from: "devs@railsdesigner.com",
+      order_id: 123
+    )
+
+    assert_equal "Order 123", email.subject
+  end
+
   private
 
   def with_mocked_markdown
