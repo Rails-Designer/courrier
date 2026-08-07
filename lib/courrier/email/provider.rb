@@ -14,6 +14,7 @@ require "courrier/email/providers/resend"
 require "courrier/email/providers/ses"
 require "courrier/email/providers/sendgrid"
 require "courrier/email/providers/smtp2go"
+require "courrier/email/providers/smtpcom"
 require "courrier/email/providers/sparkpost"
 require "courrier/email/providers/userlist"
 
@@ -34,6 +35,7 @@ module Courrier
         ses: Courrier::Email::Providers::Ses,
         sendgrid: Courrier::Email::Providers::Sendgrid,
         smtp2go: Courrier::Email::Providers::Smtp2go,
+        smtpcom: Courrier::Email::Providers::Smtpcom,
         sparkpost: Courrier::Email::Providers::Sparkpost,
         userlist: Courrier::Email::Providers::Userlist
       }
