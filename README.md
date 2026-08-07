@@ -198,6 +198,7 @@ Courrier supports these transactional email providers:
 - [Loops](https://loops.so)
 - [Mailgun](https://mailgun.com)
 - [MailPace](https://mailpace.com)
+- [Mailtrap](https://mailtrap.io)
 - [Postmark](https://postmarkapp.com)
 - [Resend](https://resend.com)
 - [SendGrid](https://sendgrid.com)
