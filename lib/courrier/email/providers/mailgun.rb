@@ -33,7 +33,7 @@ module Courrier
 
         def default_headers
           {
-            "Authorization" => "Basic #{Base64.strict_encode64("api:#{@api_key}")}"
+            "Authorization" => "Basic #{["api:#{@api_key}"].pack("m0")}"
           }
         end
       end
