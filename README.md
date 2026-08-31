@@ -96,6 +96,7 @@ Courrier.configure do |config|
   config.providers.cloudflare.account_id = "your-account-id"
   config.providers.loops.transactional_id = "default-template"
   config.providers.mailgun.domain = "notifications.railsdesigner.com"
+  config.providers.smtpcom.channel = "your-sender-channel"
 
   config.providers.ses.region = "us-east-1"
   config.providers.ses.access_key_id = "your-access-key-id"
@@ -205,6 +206,7 @@ Courrier supports these transactional email providers:
 - [Resend](https://resend.com)
 - [SendGrid](https://sendgrid.com)
 - [SMTP2GO](https://www.smtp2go.com/)
+- [SMTP.com](https://www.smtp.com/) — requires a `channel`
 - [SparkPost](https://www.sparkpost.com/)
 - [Userlist](https://userlist.com)
 
