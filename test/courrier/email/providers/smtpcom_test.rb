@@ -81,6 +81,22 @@ module Courrier::Email::Providers
       mock_provider.verify
     end
 
+    def test_omits_empty_address_fields
+      email = TestEmail.new(
+        from: "devs@railsdesigner.com",
+        to: "first@example.com",
+        cc: "",
+        bcc: "   ",
+        reply_to: ","
+      )
+
+      body = provider_for(email).body
+
+      refute_includes body["recipients"].keys, "cc"
+      refute_includes body["recipients"].keys, "bcc"
+      refute_includes body["originator"].keys, "reply_to"
+    end
+
     private
 
     def provider_for(email)

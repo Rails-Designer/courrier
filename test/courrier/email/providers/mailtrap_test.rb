@@ -57,5 +57,21 @@ module Courrier::Email::Providers
 
       mock_provider.verify
     end
+
+    def test_omits_empty_address_fields
+      email = TestEmail.new(
+        from: "devs@railsdesigner.com",
+        to: "first@example.com",
+        cc: "",
+        bcc: "   ",
+        reply_to: ","
+      )
+
+      body = Mailtrap.new(api_key: "test_key", options: email.options).body
+
+      refute_includes body.keys, "cc"
+      refute_includes body.keys, "bcc"
+      refute_includes body.keys, "reply_to"
+    end
   end
 end
