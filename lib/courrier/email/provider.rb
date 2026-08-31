@@ -7,6 +7,7 @@ require "courrier/email/providers/lettermint"
 require "courrier/email/providers/logger"
 require "courrier/email/providers/loops"
 require "courrier/email/providers/mailgun"
+require "courrier/email/providers/mailkite"
 require "courrier/email/providers/mailjet"
 require "courrier/email/providers/mailpace"
 require "courrier/email/providers/postmark"
@@ -27,6 +28,7 @@ module Courrier
         lettermint: Courrier::Email::Providers::Lettermint,
         loops: Courrier::Email::Providers::Loops,
         mailgun: Courrier::Email::Providers::Mailgun,
+        mailkite: Courrier::Email::Providers::Mailkite,
         mailjet: Courrier::Email::Providers::Mailjet,
         mailpace: Courrier::Email::Providers::Mailpace,
         postmark: Courrier::Email::Providers::Postmark,

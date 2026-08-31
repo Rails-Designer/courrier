@@ -52,6 +52,7 @@ class TestCourrierEmailProvider < Minitest::Test
       logger: Courrier::Email::Providers::Logger,
       loops: Courrier::Email::Providers::Loops,
       mailgun: Courrier::Email::Providers::Mailgun,
+      mailkite: Courrier::Email::Providers::Mailkite,
       mailjet: Courrier::Email::Providers::Mailjet,
       mailpace: Courrier::Email::Providers::Mailpace,
       postmark: Courrier::Email::Providers::Postmark,

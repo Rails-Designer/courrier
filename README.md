@@ -197,6 +197,7 @@ Courrier supports these transactional email providers:
 - [Lettermint](https://lettermint.co)
 - [Loops](https://loops.so)
 - [Mailgun](https://mailgun.com)
+- [MailKite](https://mailkite.dev)
 - [MailPace](https://mailpace.com)
 - [Postmark](https://postmarkapp.com)
 - [Resend](https://resend.com)
