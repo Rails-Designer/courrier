@@ -200,6 +200,7 @@ Courrier supports these transactional email providers:
 - [Mailgun](https://mailgun.com)
 - [MailKite](https://mailkite.dev)
 - [MailPace](https://mailpace.com)
+- [Mailtrap](https://mailtrap.io)
 - [Postmark](https://postmarkapp.com)
 - [Resend](https://resend.com)
 - [SendGrid](https://sendgrid.com)

@@ -11,6 +11,7 @@ require "courrier/email/providers/mailgun"
 require "courrier/email/providers/mailkite"
 require "courrier/email/providers/mailjet"
 require "courrier/email/providers/mailpace"
+require "courrier/email/providers/mailtrap"
 require "courrier/email/providers/postmark"
 require "courrier/email/providers/resend"
 require "courrier/email/providers/ses"
@@ -33,6 +34,7 @@ module Courrier
         mailkite: Courrier::Email::Providers::Mailkite,
         mailjet: Courrier::Email::Providers::Mailjet,
         mailpace: Courrier::Email::Providers::Mailpace,
+        mailtrap: Courrier::Email::Providers::Mailtrap,
         postmark: Courrier::Email::Providers::Postmark,
         resend: Courrier::Email::Providers::Resend,
         ses: Courrier::Email::Providers::Ses,
