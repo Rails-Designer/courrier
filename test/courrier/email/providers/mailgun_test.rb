@@ -6,7 +6,9 @@ module Courrier::Email::Providers
       email = TestEmail.new(
         from: "devs@railsdesigner.com",
         to: "first@example.com, second@example.com",
-        reply_to: "support@railsdesigner.com"
+        reply_to: "support@railsdesigner.com",
+        cc: "copy@example.com, second-copy@example.com",
+        bcc: "archive@example.com"
       )
 
       @provider = provider_for(email)
@@ -17,6 +19,8 @@ module Courrier::Email::Providers
         {
           "from" => "devs@railsdesigner.com",
           "to" => "first@example.com, second@example.com",
+          "cc" => "copy@example.com, second-copy@example.com",
+          "bcc" => "archive@example.com",
           "h:Reply-To" => "support@railsdesigner.com",
           "subject" => "Test Subject",
           "text" => "Test Body",
@@ -30,6 +34,13 @@ module Courrier::Email::Providers
       body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com")).body
 
       refute_includes body.keys, "h:Reply-To"
+    end
+
+    def test_omits_empty_address_fields
+      body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com", cc: "", bcc: "  ")).body
+
+      refute_includes body.keys, "cc"
+      refute_includes body.keys, "bcc"
     end
 
     def test_builds_endpoint_url_from_domain
