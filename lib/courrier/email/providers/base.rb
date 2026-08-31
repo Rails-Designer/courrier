@@ -40,6 +40,21 @@ module Courrier
 
         def default_headers = {}
 
+        def address_list(value, as: :email)
+          list = value&.to_s&.split(",")&.map(&:strip)&.reject(&:empty?)
+          return unless list && !list.empty?
+
+          list.map { |address| address_element(address, as) }
+        end
+
+        def address_element(address, as)
+          case as
+          when :email then {"email" => address}
+          when :address then {"address" => address}
+          else address
+          end
+        end
+
         def provider = self.class.name.split("::").last
       end
     end

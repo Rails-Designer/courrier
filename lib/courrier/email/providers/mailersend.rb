@@ -8,11 +8,11 @@ module Courrier
 
         def body
           {
-            "from" => email_address(@options.from),
-            "to" => email_addresses(@options.to),
-            "cc" => email_addresses(@options.cc),
-            "bcc" => email_addresses(@options.bcc),
-            "reply_to" => email_address(@options.reply_to),
+            "from" => address_list(@options.from)&.first,
+            "to" => address_list(@options.to),
+            "cc" => address_list(@options.cc),
+            "bcc" => address_list(@options.bcc),
+            "reply_to" => address_list(@options.reply_to)&.first,
             "subject" => @options.subject,
             "text" => @options.text,
             "html" => @options.html
@@ -22,14 +22,6 @@ module Courrier
         private
 
         def default_headers = {"Authorization" => "Bearer #{@api_key}"}
-
-        def email_addresses(addresses)
-          addresses&.split(",")&.map { |address| email_address(address) }
-        end
-
-        def email_address(address)
-          {"email" => address.strip} if address
-        end
       end
     end
   end

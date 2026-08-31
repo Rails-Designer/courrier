@@ -12,13 +12,13 @@ module Courrier
           {
             "channel" => channel,
             "recipients" => {
-              "to" => email_addresses(@options.to),
-              "cc" => email_addresses(@options.cc),
-              "bcc" => email_addresses(@options.bcc)
+              "to" => address_list(@options.to, as: :address),
+              "cc" => address_list(@options.cc, as: :address),
+              "bcc" => address_list(@options.bcc, as: :address)
             }.compact,
             "originator" => {
-              "from" => email_address(@options.from),
-              "reply_to" => email_address(@options.reply_to)
+              "from" => address_list(@options.from, as: :address)&.first,
+              "reply_to" => address_list(@options.reply_to, as: :address)&.first
             }.compact,
             "subject" => @options.subject,
             "body" => {"parts" => parts}
@@ -51,14 +51,6 @@ module Courrier
         end
 
         def base64(value) = [value].pack("m0")
-
-        def email_addresses(addresses)
-          addresses&.split(",")&.map { |address| email_address(address) }
-        end
-
-        def email_address(address)
-          {"address" => address.strip} if address
-        end
       end
     end
   end

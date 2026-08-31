@@ -9,9 +9,9 @@ module Courrier
         def body
           {
             "from" => @options.from,
-            "to" => addresses(@options.to),
-            "cc" => addresses(@options.cc),
-            "bcc" => addresses(@options.bcc),
+            "to" => address_list(@options.to, as: :plain),
+            "cc" => address_list(@options.cc, as: :plain),
+            "bcc" => address_list(@options.bcc, as: :plain),
             "replyTo" => @options.reply_to,
             "subject" => @options.subject,
             "text" => @options.text,
@@ -25,12 +25,6 @@ module Courrier
           {
             "Authorization" => "Bearer #{@api_key}"
           }
-        end
-
-        def addresses(value)
-          list = value&.to_s&.split(",")&.map(&:strip)&.reject(&:empty?)
-
-          list&.empty? ? nil : list
         end
       end
     end
