@@ -196,6 +196,7 @@ Courrier supports these transactional email providers:
 - [Cloudflare Email Service](https://developers.cloudflare.com/email-service/)
 - [Lettermint](https://lettermint.co)
 - [Loops](https://loops.so)
+- [MailerSend](https://www.mailersend.com/)
 - [Mailgun](https://mailgun.com)
 - [MailKite](https://mailkite.dev)
 - [MailPace](https://mailpace.com)

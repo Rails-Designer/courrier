@@ -6,6 +6,7 @@ require "courrier/email/providers/cloudflare"
 require "courrier/email/providers/lettermint"
 require "courrier/email/providers/logger"
 require "courrier/email/providers/loops"
+require "courrier/email/providers/mailersend"
 require "courrier/email/providers/mailgun"
 require "courrier/email/providers/mailkite"
 require "courrier/email/providers/mailjet"
@@ -27,6 +28,7 @@ module Courrier
         logger: Courrier::Email::Providers::Logger,
         lettermint: Courrier::Email::Providers::Lettermint,
         loops: Courrier::Email::Providers::Loops,
+        mailersend: Courrier::Email::Providers::Mailersend,
         mailgun: Courrier::Email::Providers::Mailgun,
         mailkite: Courrier::Email::Providers::Mailkite,
         mailjet: Courrier::Email::Providers::Mailjet,
