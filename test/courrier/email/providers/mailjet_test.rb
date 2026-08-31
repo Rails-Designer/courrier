@@ -5,8 +5,10 @@ module Courrier::Email::Providers
     def setup
       email = TestEmail.new(
         from: "devs@railsdesigner.com",
-        to: "first@example.com",
-        reply_to: "support@railsdesigner.com"
+        to: "first@example.com, second@example.com",
+        reply_to: "support@railsdesigner.com",
+        cc: "copy@example.com",
+        bcc: "archive@example.com"
       )
 
       @provider = provider_for(email)
@@ -18,7 +20,9 @@ module Courrier::Email::Providers
           "Messages" => [
             {
               "From" => {"Email" => "devs@railsdesigner.com"},
-              "To" => [{"Email" => "first@example.com"}],
+              "To" => [{"Email" => "first@example.com"}, {"Email" => "second@example.com"}],
+              "Cc" => [{"Email" => "copy@example.com"}],
+              "Bcc" => [{"Email" => "archive@example.com"}],
               "ReplyTo" => {"Email" => "support@railsdesigner.com"},
               "Subject" => "Test Subject",
               "TextPart" => "Test Body",
@@ -34,6 +38,13 @@ module Courrier::Email::Providers
       body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com")).body
 
       refute_includes body["Messages"].first.keys, "ReplyTo"
+    end
+
+    def test_omits_empty_address_fields
+      message = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com", cc: "", bcc: "  ")).body["Messages"].first
+
+      refute_includes message.keys, "Cc"
+      refute_includes message.keys, "Bcc"
     end
 
     def test_authenticates_with_api_key_and_secret
