@@ -16,11 +16,9 @@ module Courrier
                   "Email" => @options.from
                 },
 
-                "To" => [
-                  {
-                    "Email" => @options.to
-                  }
-                ],
+                "To" => addresses(@options.to),
+                "Cc" => addresses(@options.cc),
+                "Bcc" => addresses(@options.bcc),
                 "ReplyTo" => reply_to_object,
 
                 "Subject" => @options.subject,
@@ -37,6 +35,10 @@ module Courrier
           {
             "Authorization" => "Basic #{["#{@api_key}:#{@provider_options.api_secret}"].pack("m0")}"
           }
+        end
+
+        def addresses(value)
+          address_list(value, as: :plain)&.map { |address| {"Email" => address} }
         end
 
         def reply_to_object

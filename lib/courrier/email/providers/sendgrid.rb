@@ -13,12 +13,10 @@ module Courrier
             },
             "personalizations" => [
               {
-                "to" => [
-                  {
-                    "email" => @options.to
-                  }
-                ]
-              }
+                "to" => address_list(@options.to),
+                "cc" => address_list(@options.cc),
+                "bcc" => address_list(@options.bcc)
+              }.compact
             ],
             "reply_to" => reply_to_object,
 

@@ -47,6 +47,8 @@ module Courrier
           list.map { |address| address_element(address, as) }
         end
 
+        def address_line(value) = address_list(value, as: :plain)&.join(", ")
+
         def address_element(address, as)
           case as
           when :email then {"email" => address}

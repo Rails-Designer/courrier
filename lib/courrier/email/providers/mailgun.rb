@@ -13,6 +13,8 @@ module Courrier
             "from" => @options.from,
 
             "to" => @options.to,
+            "cc" => address_line(@options.cc),
+            "bcc" => address_line(@options.bcc),
             "h:Reply-To" => @options.reply_to,
 
             "subject" => @options.subject,
