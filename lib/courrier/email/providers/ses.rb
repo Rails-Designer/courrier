@@ -28,12 +28,12 @@ module Courrier
           {
             "FromEmailAddress" => @options.from,
             "Destination" => {
-              "ToAddresses" => Array(@options.to),
-              "CcAddresses" => @options.cc ? Array(@options.cc) : nil,
-              "BccAddresses" => @options.bcc ? Array(@options.bcc) : nil
+              "ToAddresses" => address_list(@options.to, as: :plain),
+              "CcAddresses" => address_list(@options.cc, as: :plain),
+              "BccAddresses" => address_list(@options.bcc, as: :plain)
             }.compact,
 
-            "ReplyToAddresses" => @options.reply_to ? Array(@options.reply_to) : nil,
+            "ReplyToAddresses" => address_list(@options.reply_to, as: :plain),
             "Content" => {
               "Simple" => {
                 "Subject" => {"Data" => @options.subject},
