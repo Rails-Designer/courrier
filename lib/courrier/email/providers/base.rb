@@ -41,13 +41,20 @@ module Courrier
         def default_headers = {}
 
         def address_list(value, as: :email)
-          list = value&.to_s&.split(",")&.map(&:strip)&.reject(&:empty?)
-          return unless list && !list.empty?
+          list = split_addresses(value).map(&:strip).reject(&:empty?)
+          return if list.empty?
 
           list.map { |address| address_element(address, as) }
         end
 
         def address_line(value) = address_list(value, as: :plain)&.join(", ")
+
+        # Split a recipient string on the commas that separate addresses, while
+        # leaving a comma inside a quoted display name — `"Doe, Jane" <jane@example.com>`,
+        # which is what `Courrier::Email::Address.with_name` produces — untouched.
+        def split_addresses(value)
+          value.to_s.scan(/(?:"(?:\\.|[^"\\])*"|[^,])+/)
+        end
 
         def address_element(address, as)
           case as

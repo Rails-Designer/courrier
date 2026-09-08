@@ -12,10 +12,10 @@ module Courrier
           {
             "route" => @provider_options.route,
             "from" => @options.from,
-            "to" => @options.to.to_s.split(",").map(&:strip),
-            "cc" => @options.cc&.split(",")&.map(&:strip),
-            "bcc" => @options.bcc&.split(",")&.map(&:strip),
-            "reply_to" => @options.reply_to&.split(",")&.map(&:strip),
+            "to" => address_list(@options.to, as: :plain),
+            "cc" => address_list(@options.cc, as: :plain),
+            "bcc" => address_list(@options.bcc, as: :plain),
+            "reply_to" => address_list(@options.reply_to, as: :plain),
             "subject" => @options.subject,
             "html" => @options.html,
             "text" => @options.text
