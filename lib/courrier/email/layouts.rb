@@ -20,13 +20,13 @@ module Courrier
       def no_layouts? = @email.class.layouts.nil?
 
       def layouts
-        FORMATS.map(&:to_sym).to_h do |format|
+        FORMATS.map(&:to_sym).filter_map do |format|
           template = @email.class.layouts[format]
 
           next if template.nil?
 
           [format, render(template)]
-        end
+        end.to_h
       end
 
       def render(template)
