@@ -9,9 +9,9 @@ module Courrier
         def body
           {
             "sender" => @options.from,
-            "to" => @options.to.to_s.split(",").map(&:strip),
-            "cc" => @options.cc&.split(",")&.map(&:strip),
-            "bcc" => @options.bcc&.split(",")&.map(&:strip),
+            "to" => address_list(@options.to, as: :plain),
+            "cc" => address_list(@options.cc, as: :plain),
+            "bcc" => address_list(@options.bcc, as: :plain),
             "subject" => @options.subject,
             "html_body" => @options.html,
             "text_body" => @options.text

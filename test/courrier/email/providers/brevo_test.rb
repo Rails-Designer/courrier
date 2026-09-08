@@ -5,10 +5,10 @@ module Courrier::Email::Providers
     def setup
       email = TestEmail.new(
         from: "devs@railsdesigner.com",
-        to: "first@example.com, second@example.com",
+        to: "to@railsdesigner.com, cc@railsdesigner.com",
         reply_to: "support@railsdesigner.com",
-        cc: "copy@example.com",
-        bcc: "archive@example.com"
+        cc: "bcc@railsdesigner.com",
+        bcc: "archive@railsdesigner.com"
       )
 
       @provider = Brevo.new(api_key: "test_key", options: email.options)
@@ -18,9 +18,9 @@ module Courrier::Email::Providers
       assert_equal(
         {
           "sender" => {"email" => "devs@railsdesigner.com"},
-          "to" => [{"email" => "first@example.com"}, {"email" => "second@example.com"}],
-          "cc" => [{"email" => "copy@example.com"}],
-          "bcc" => [{"email" => "archive@example.com"}],
+          "to" => [{"email" => "to@railsdesigner.com"}, {"email" => "cc@railsdesigner.com"}],
+          "cc" => [{"email" => "bcc@railsdesigner.com"}],
+          "bcc" => [{"email" => "archive@railsdesigner.com"}],
           "replyTo" => {"email" => "support@railsdesigner.com"},
           "subject" => "Test Subject",
           "htmlContent" => "<p>Test HTML Body</p>",
@@ -28,6 +28,15 @@ module Courrier::Email::Providers
         },
         @provider.body
       )
+    end
+
+    def test_keeps_a_comma_inside_a_quoted_display_name
+      recipient = Courrier::Email::Address.with_name("cc@railsdesigner.com", "Rails, Designer")
+      email = TestEmail.new(from: "devs@railsdesigner.com", to: "#{recipient}, cc@railsdesigner.com")
+
+      body = Brevo.new(api_key: "test_key", options: email.options).body
+
+      assert_equal [{"email" => recipient}, {"email" => "cc@railsdesigner.com"}], body["to"]
     end
 
     def test_authenticates_with_api_key
@@ -52,7 +61,7 @@ module Courrier::Email::Providers
     def test_omits_empty_address_fields
       email = TestEmail.new(
         from: "devs@railsdesigner.com",
-        to: "first@example.com",
+        to: "to@railsdesigner.com",
         cc: "",
         bcc: "   ",
         reply_to: ","
