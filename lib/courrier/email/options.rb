@@ -56,7 +56,7 @@ module Courrier
 
           next wrapped if !layout
 
-          layout % {content: wrapped}
+          layout.gsub("%{content}") { wrapped }
         end
       end
 
