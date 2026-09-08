@@ -49,9 +49,9 @@ module Courrier
 
         def address_line(value) = address_list(value, as: :plain)&.join(", ")
 
-        # Split a recipient string on the commas that separate addresses, while
-        # leaving a comma inside a quoted display name — `"Doe, Jane" <jane@example.com>`,
-        # which is what `Courrier::Email::Address.with_name` produces — untouched.
+        # Split a recipient string on the commas that separate addresses, leaving
+        # a comma inside a quoted display name (`"Doe, Jane" <jane@example.com>`,
+        # which is what `Courrier::Email::Address.with_name` produces) untouched.
         def split_addresses(value)
           value.to_s.scan(/(?:"(?:\\.|[^"\\])*"|[^,])+/)
         end
