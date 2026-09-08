@@ -22,10 +22,10 @@ module Courrier
           name
         end
 
-        def quote_escaped(name) = %("#{name.gsub('"', '\\"')}")
+        def quote_escaped(name) = %("#{name.gsub(/["\\]/) { |character| "\\#{character}" }}")
 
         def special_characters_in?(name)
-          name =~ /[(),.:;<>@\[\]"]/
+          name =~ /[(),.:;<>@\[\]"\\]/
         end
       end
 
