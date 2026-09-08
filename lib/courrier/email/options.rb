@@ -56,7 +56,10 @@ module Courrier
 
           next wrapped if !layout
 
-          layout % {content: wrapped}
+          # A plain substitution, not `String#%`: an HTML layout routinely carries a
+          # bare `%` (`width: 100%`, an encoded URL), and `format` raises on those.
+          # The block form also keeps the content verbatim when it contains `\1`, `\\`, etc.
+          layout.gsub("%{content}") { wrapped }
         end
       end
 
