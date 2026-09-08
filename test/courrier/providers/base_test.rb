@@ -68,4 +68,41 @@ class Courrier::Email::Providers::BaseTest < Minitest::Test
 
     assert_equal({}, headers)
   end
+
+  def test_address_list_splits_a_plain_comma_separated_list
+    assert_equal(
+      [{"email" => "first@example.com"}, {"email" => "second@example.com"}],
+      @provider.send(:address_list, "first@example.com, second@example.com")
+    )
+  end
+
+  def test_address_list_keeps_a_comma_inside_a_quoted_display_name
+    recipient = Courrier::Email::Address.with_name("jane@example.com", "Doe, Jane")
+
+    assert_equal [{"email" => recipient}], @provider.send(:address_list, recipient)
+    assert_equal(
+      [{"email" => recipient}, {"email" => "bob@example.com"}],
+      @provider.send(:address_list, "#{recipient}, bob@example.com")
+    )
+  end
+
+  def test_address_list_tolerates_an_escaped_quote_in_the_display_name
+    recipient = Courrier::Email::Address.with_name("j@example.com", 'John "JD" Doe')
+
+    assert_equal [recipient], @provider.send(:address_list, recipient, as: :plain)
+  end
+
+  def test_address_list_returns_nil_for_blank_input
+    assert_nil @provider.send(:address_list, nil)
+    assert_nil @provider.send(:address_list, "")
+    assert_nil @provider.send(:address_list, "   ")
+    assert_nil @provider.send(:address_list, ",")
+  end
+
+  def test_address_line_joins_without_breaking_a_quoted_name
+    recipient = Courrier::Email::Address.with_name("jane@example.com", "Doe, Jane")
+    line = "#{recipient}, bob@example.com"
+
+    assert_equal line, @provider.send(:address_line, line)
+  end
 end

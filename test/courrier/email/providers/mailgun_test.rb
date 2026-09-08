@@ -43,6 +43,15 @@ module Courrier::Email::Providers
       refute_includes body.keys, "bcc"
     end
 
+    def test_keeps_a_comma_inside_a_quoted_display_name
+      # `address_line` splits then rejoins with ", ", so a name whose comma is not
+      # already followed by exactly one space is the case that gets rewritten.
+      recipient = Courrier::Email::Address.with_name("jane@example.com", "Doe,Jane")
+      body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com", cc: recipient)).body
+
+      assert_equal recipient, body["cc"]
+    end
+
     def test_builds_endpoint_url_from_domain
       assert_equal "https://api.mailgun.net/v3/railsdesigner.com/messages", @provider.send(:endpoint_url)
     end

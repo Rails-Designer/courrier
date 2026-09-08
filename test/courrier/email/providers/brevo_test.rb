@@ -30,6 +30,15 @@ module Courrier::Email::Providers
       )
     end
 
+    def test_keeps_a_comma_inside_a_quoted_display_name
+      recipient = Courrier::Email::Address.with_name("jane@example.com", "Doe, Jane")
+      email = TestEmail.new(from: "devs@railsdesigner.com", to: "#{recipient}, bob@example.com")
+
+      body = Brevo.new(api_key: "test_key", options: email.options).body
+
+      assert_equal [{"email" => recipient}, {"email" => "bob@example.com"}], body["to"]
+    end
+
     def test_authenticates_with_api_key
       assert_equal({"api-key" => "test_key"}, @provider.send(:default_headers))
     end
