@@ -17,7 +17,7 @@ module Courrier
       private
 
       def parsed(body)
-        return {} if @response.nil?
+        return {} if body.nil? || body.empty?
 
         begin
           JSON.parse(body)
