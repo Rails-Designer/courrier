@@ -1,7 +1,9 @@
+require "digest"
 require "test_helper"
 require "courrier/subscriber/buttondown"
 require "courrier/subscriber/mailerlite"
 require "courrier/subscriber/beehiiv"
+require "courrier/subscriber/mailchimp"
 
 # A "+tag" address (Gmail-style) must survive being placed in a request URL:
 # `+` means a space in a query string and is ambiguous in a path, so an
@@ -34,6 +36,16 @@ class Courrier::Subscriber::UrlEncodingTest < Minitest::Test
       "https://api.beehiiv.com/v2/publications/pub_1/subscriptions?email=#{ENCODED}",
       request[:url]
     )
+  end
+
+  def test_mailchimp_addresses_the_member_by_the_md5_of_the_lowercased_email
+    Courrier.configure { |c| c.subscriber = {dc: "us1", list_id: "abc123"} }
+
+    request = capture_request(Courrier::Subscriber::Mailchimp.new(api_key: "k")) { it.destroy("Subscriber@Example.com") }
+
+    hash = Digest::MD5.hexdigest("subscriber@example.com")
+    assert_equal :delete, request[:method]
+    assert_equal "https://us1.api.mailchimp.com/3.0/lists/abc123/members/#{hash}", request[:url]
   end
 
   private
