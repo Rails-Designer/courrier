@@ -31,4 +31,24 @@ class Courrier::Email::LayoutsTest < Minitest::Test
 
     assert_equal expected, Courrier::Email::Layouts.new(email).build
   end
+
+  def test_html_only_layout
+    email = TestEmailWithHtmlOnlyLayout.new(
+      from: "devs@railsdesigner.com",
+      to: "recipient@railsdesigner.com"
+    )
+
+    assert_equal [{ html: "<html>%{content}</html>" }], Courrier::Email::Layouts.new(email).build
+    assert_equal "<html><p>Body</p></html>", email.options.html
+  end
+
+  def test_text_only_layout
+    email = TestEmailWithTextOnlyLayout.new(
+      from: "devs@railsdesigner.com",
+      to: "recipient@railsdesigner.com"
+    )
+
+    assert_equal [{ text: "%{content}\n\nThanks!" }], Courrier::Email::Layouts.new(email).build
+    assert_equal "Body\n\nThanks!", email.options.text
+  end
 end
