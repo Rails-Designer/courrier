@@ -5,10 +5,10 @@ module Courrier::Email::Providers
     def setup
       email = TestEmail.new(
         from: "devs@railsdesigner.com",
-        to: "first@example.com, second@example.com",
+        to: "to@railsdesigner.com, cc@railsdesigner.com",
         reply_to: "support@railsdesigner.com",
-        cc: "copy@example.com, second-copy@example.com",
-        bcc: "archive@example.com"
+        cc: "bcc@railsdesigner.com, second-bcc@railsdesigner.com",
+        bcc: "archive@railsdesigner.com"
       )
 
       @provider = provider_for(email)
@@ -18,9 +18,9 @@ module Courrier::Email::Providers
       assert_equal(
         {
           "from" => "devs@railsdesigner.com",
-          "to" => "first@example.com, second@example.com",
-          "cc" => "copy@example.com, second-copy@example.com",
-          "bcc" => "archive@example.com",
+          "to" => "to@railsdesigner.com, cc@railsdesigner.com",
+          "cc" => "bcc@railsdesigner.com, second-bcc@railsdesigner.com",
+          "bcc" => "archive@railsdesigner.com",
           "h:Reply-To" => "support@railsdesigner.com",
           "subject" => "Test Subject",
           "text" => "Test Body",
@@ -31,16 +31,23 @@ module Courrier::Email::Providers
     end
 
     def test_omits_reply_to_when_not_set
-      body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com")).body
+      body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "to@railsdesigner.com")).body
 
       refute_includes body.keys, "h:Reply-To"
     end
 
     def test_omits_empty_address_fields
-      body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com", cc: "", bcc: "  ")).body
+      body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "to@railsdesigner.com", cc: "", bcc: "  ")).body
 
       refute_includes body.keys, "cc"
       refute_includes body.keys, "bcc"
+    end
+
+    def test_keeps_a_comma_inside_a_quoted_display_name
+      recipient = Courrier::Email::Address.with_name("cc@railsdesigner.com", "Rails,Designer")
+      body = provider_for(TestEmail.new(from: "devs@railsdesigner.com", to: "to@railsdesigner.com", cc: recipient)).body
+
+      assert_equal recipient, body["cc"]
     end
 
     def test_builds_endpoint_url_from_domain
@@ -50,7 +57,7 @@ module Courrier::Email::Providers
     def test_requires_a_domain
       provider = Mailgun.new(
         api_key: "test_key",
-        options: TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com").options,
+        options: TestEmail.new(from: "devs@railsdesigner.com", to: "to@railsdesigner.com").options,
         provider_options: Courrier::Configuration::ProviderConfig.new
       )
 
