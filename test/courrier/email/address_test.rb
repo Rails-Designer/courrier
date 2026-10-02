@@ -44,4 +44,16 @@ class Courrier::Email::AddressTest < Minitest::Test
     assert_equal "\"John \\\"Johnny\\\" Doe\" <devs@railsdesigner.com>",
       Courrier::Email::Address.with_name("devs@railsdesigner.com", 'John "Johnny" Doe')
   end
+
+  def test_with_name_quotes_and_escapes_a_backslash
+    assert_equal "\"C:\\\\Users, Inc\" <devs@railsdesigner.com>",
+      Courrier::Email::Address.with_name("devs@railsdesigner.com", 'C:\Users, Inc')
+  end
+
+  # A trailing backslash would otherwise escape the closing quote and run the
+  # display name into the address.
+  def test_with_name_escapes_a_trailing_backslash
+    assert_equal "\"Doe\\\\\" <devs@railsdesigner.com>",
+      Courrier::Email::Address.with_name("devs@railsdesigner.com", 'Doe\\')
+  end
 end
