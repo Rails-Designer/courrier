@@ -31,6 +31,22 @@ class Courrier::Email::ResultTest < Minitest::Test
     assert_equal({}, result.data)
   end
 
+  def test_initialize_with_no_content_response
+    response = Data.define(:code, :body).new(code: "204", body: nil)
+    result = Courrier::Email::Result.new(response: response)
+
+    assert result.success?
+    assert_equal({}, result.data)
+  end
+
+  def test_initialize_with_empty_body
+    response = Data.define(:code, :body).new(code: "202", body: "")
+    result = Courrier::Email::Result.new(response: response)
+
+    assert result.success?
+    assert_equal({}, result.data)
+  end
+
   def test_success_predicate_method
     result = Courrier::Email::Result.new(
       response: Data.define(:code, :body).new(code: "200", body: "{}")
