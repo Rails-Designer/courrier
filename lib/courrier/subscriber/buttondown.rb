@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "uri"
 require "courrier/subscriber/base"
 
 module Courrier
@@ -12,7 +13,7 @@ module Courrier
       end
 
       def destroy(email)
-        request(:delete, "#{ENDPOINT_URL}/#{email}")
+        request(:delete, "#{ENDPOINT_URL}/#{URI.encode_www_form_component(email)}")
       end
 
       private
