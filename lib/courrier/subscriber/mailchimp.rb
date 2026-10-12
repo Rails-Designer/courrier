@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "digest"
 require "courrier/subscriber/base"
 
 module Courrier
@@ -23,10 +24,12 @@ module Courrier
 
         raise Courrier::ConfigurationError, "Mailchimp requires `dc` and `list_id` in subscriber configuration" unless dc && list_id
 
-        request(:delete, "https://#{dc}.api.mailchimp.com/3.0/lists/#{list_id}/members/#{email}")
+        request(:delete, "https://#{dc}.api.mailchimp.com/3.0/lists/#{list_id}/members/#{subscriber_hash(email)}")
       end
 
       private
+
+      def subscriber_hash(email) = Digest::MD5.hexdigest(email.downcase)
 
       def headers
         {

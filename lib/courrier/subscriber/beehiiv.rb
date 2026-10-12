@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "uri"
 require "courrier/subscriber/base"
 
 module Courrier
@@ -27,7 +28,10 @@ module Courrier
       private
 
       def subscription_id(publication_id, email)
-        response = request(:get, "#{ENDPOINT_URL}/#{publication_id}/subscriptions?email=#{email}")
+        response = request(
+          :get,
+          "#{ENDPOINT_URL}/#{publication_id}/subscriptions?email=#{URI.encode_www_form_component(email)}"
+        )
 
         return nil unless response.success?
 
