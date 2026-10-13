@@ -47,6 +47,21 @@ module Courrier::Email::Providers
       assert_equal({"Authorization" => "Bearer test_key"}, @provider.send(:default_headers))
     end
 
+    def test_sends_a_display_name_in_its_own_field
+      recipient = Courrier::Email::Address.with_name("cc@railsdesigner.com", 'Doe, "Johnny" John')
+      email = TestEmail.new(
+        from: "Rails Designer <devs@railsdesigner.com>",
+        to: "#{recipient}, plain@example.com",
+        reply_to: "Support <support@railsdesigner.com>"
+      )
+
+      body = Sendgrid.new(api_key: "test_key", options: email.options).body
+
+      assert_equal({"email" => "devs@railsdesigner.com", "name" => "Rails Designer"}, body["from"])
+      assert_equal [{"email" => "cc@railsdesigner.com", "name" => "Doe, \"Johnny\" John"}, {"email" => "plain@example.com"}], body["personalizations"][0]["to"]
+      assert_equal({"email" => "support@railsdesigner.com", "name" => "Support"}, body["reply_to"])
+    end
+
     private
 
     def provider_for(**options)

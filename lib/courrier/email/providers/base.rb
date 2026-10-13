@@ -55,10 +55,26 @@ module Courrier
 
         def address_element(address, as)
           case as
-          when :email then {"email" => address}
+          when :email then email_and_name(address)
           when :address then {"address" => address}
           else address
           end
+        end
+
+        # JSON APIs take the display name of `Name <email>` in a field of its own and reject it in the email field
+        def email_and_name(address, email_key: "email", name_key: "name")
+          match = address.match(/\A(?<name>.*?)\s*<(?<email>[^<>]+)>\z/m)
+          return {email_key => address} unless match
+
+          name = unquote(match[:name].strip)
+
+          {email_key => match[:email].strip, name_key => (name unless name.empty?)}.compact
+        end
+
+        def unquote(name)
+          return name unless name.length >= 2 && name.start_with?('"') && name.end_with?('"')
+
+          name[1..-2].gsub(/\\(.)/m, '\1')
         end
 
         def provider = self.class.name.split("::").last

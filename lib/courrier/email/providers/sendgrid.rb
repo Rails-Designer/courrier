@@ -8,9 +8,7 @@ module Courrier
 
         def body
           {
-            "from" => {
-              "email" => @options.from
-            },
+            "from" => address_list(@options.from)&.first,
             "personalizations" => [
               {
                 "to" => address_list(@options.to),
@@ -18,7 +16,7 @@ module Courrier
                 "bcc" => address_list(@options.bcc)
               }.compact
             ],
-            "reply_to" => reply_to_object,
+            "reply_to" => address_list(@options.reply_to)&.first,
 
             "subject" => @options.subject,
             "content" => [
@@ -39,14 +37,6 @@ module Courrier
         def default_headers
           {
             "Authorization" => "Bearer #{@api_key}"
-          }
-        end
-
-        def reply_to_object
-          return if @options.reply_to.nil?
-
-          {
-            "email" => @options.reply_to
           }
         end
       end

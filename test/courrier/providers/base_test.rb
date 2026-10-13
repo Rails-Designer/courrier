@@ -79,9 +79,9 @@ class Courrier::Email::Providers::BaseTest < Minitest::Test
   def test_address_list_keeps_a_comma_inside_a_quoted_display_name
     recipient = Courrier::Email::Address.with_name("cc@railsdesigner.com", "Rails, Designer")
 
-    assert_equal [{"email" => recipient}], @provider.send(:address_list, recipient)
+    assert_equal [{"email" => "cc@railsdesigner.com", "name" => "Rails, Designer"}], @provider.send(:address_list, recipient)
     assert_equal(
-      [{"email" => recipient}, {"email" => "cc@railsdesigner.com"}],
+      [{"email" => "cc@railsdesigner.com", "name" => "Rails, Designer"}, {"email" => "cc@railsdesigner.com"}],
       @provider.send(:address_list, "#{recipient}, cc@railsdesigner.com")
     )
   end
