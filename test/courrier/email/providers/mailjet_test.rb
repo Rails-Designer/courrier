@@ -69,6 +69,23 @@ module Courrier::Email::Providers
       mock_provider.verify
     end
 
+    def test_sends_a_display_name_in_its_own_field
+      recipient = Courrier::Email::Address.with_name("cc@railsdesigner.com", 'Doe, "Johnny" John')
+      email = TestEmail.new(
+        from: "Rails Designer <devs@railsdesigner.com>",
+        to: "#{recipient}, plain@example.com",
+        reply_to: "Support <support@railsdesigner.com>"
+      )
+
+      body = Mailjet.new(api_key: "test_key", options: email.options, provider_options: Struct.new(:api_secret).new("secret")).body
+
+      message = body["Messages"][0]
+
+      assert_equal({"Email" => "devs@railsdesigner.com", "Name" => "Rails Designer"}, message["From"])
+      assert_equal [{"Email" => "cc@railsdesigner.com", "Name" => "Doe, \"Johnny\" John"}, {"Email" => "plain@example.com"}], message["To"]
+      assert_equal({"Email" => "support@railsdesigner.com", "Name" => "Support"}, message["ReplyTo"])
+    end
+
     private
 
     def provider_for(email)
