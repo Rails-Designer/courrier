@@ -36,7 +36,7 @@ module Courrier::Email::Providers
 
       body = Brevo.new(api_key: "test_key", options: email.options).body
 
-      assert_equal [{"email" => recipient}, {"email" => "cc@railsdesigner.com"}], body["to"]
+      assert_equal [{"email" => "cc@railsdesigner.com", "name" => "Rails, Designer"}, {"email" => "cc@railsdesigner.com"}], body["to"]
     end
 
     def test_authenticates_with_api_key
@@ -72,6 +72,21 @@ module Courrier::Email::Providers
       refute_includes body.keys, "cc"
       refute_includes body.keys, "bcc"
       refute_includes body.keys, "replyTo"
+    end
+
+    def test_sends_a_display_name_in_its_own_field
+      recipient = Courrier::Email::Address.with_name("cc@railsdesigner.com", 'Doe, "Johnny" John')
+      email = TestEmail.new(
+        from: "Rails Designer <devs@railsdesigner.com>",
+        to: "#{recipient}, plain@example.com",
+        reply_to: "Support <support@railsdesigner.com>"
+      )
+
+      body = Brevo.new(api_key: "test_key", options: email.options).body
+
+      assert_equal({"email" => "devs@railsdesigner.com", "name" => "Rails Designer"}, body["sender"])
+      assert_equal [{"email" => "cc@railsdesigner.com", "name" => "Doe, \"Johnny\" John"}, {"email" => "plain@example.com"}], body["to"]
+      assert_equal({"email" => "support@railsdesigner.com", "name" => "Support"}, body["replyTo"])
     end
   end
 end
