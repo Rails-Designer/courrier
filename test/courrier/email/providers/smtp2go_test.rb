@@ -44,6 +44,18 @@ module Courrier::Email::Providers
       refute_includes body.keys, "bcc"
     end
 
+    def test_sends_reply_to_as_a_custom_header
+      email = TestEmail.new(from: "devs@railsdesigner.com", to: "to@railsdesigner.com", reply_to: "support@railsdesigner.com")
+
+      body = Smtp2go.new(api_key: "test_key", options: email.options).body
+
+      assert_equal [{"header" => "Reply-To", "value" => "support@railsdesigner.com"}], body["custom_headers"]
+    end
+
+    def test_omits_custom_headers_without_reply_to
+      refute_includes @provider.body.keys, "custom_headers"
+    end
+
     def test_authenticates_with_api_key
       assert_equal({"X-Smtp2go-Api-Key" => "test_key"}, @provider.send(:default_headers))
     end
