@@ -12,14 +12,12 @@ module Courrier
           {
             "Messages" => [
               {
-                "From" => {
-                  "Email" => @options.from
-                },
+                "From" => addresses(@options.from)&.first,
 
                 "To" => addresses(@options.to),
                 "Cc" => addresses(@options.cc),
                 "Bcc" => addresses(@options.bcc),
-                "ReplyTo" => reply_to_object,
+                "ReplyTo" => addresses(@options.reply_to)&.first,
 
                 "Subject" => @options.subject,
                 "TextPart" => @options.text,
@@ -38,15 +36,7 @@ module Courrier
         end
 
         def addresses(value)
-          address_list(value, as: :plain)&.map { |address| {"Email" => address} }
-        end
-
-        def reply_to_object
-          return if @options.reply_to.nil?
-
-          {
-            "Email" => @options.reply_to
-          }
+          address_list(value, as: :plain)&.map { |address| email_and_name(address, email_key: "Email", name_key: "Name") }
         end
       end
     end
