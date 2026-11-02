@@ -61,7 +61,6 @@ module Courrier
           end
         end
 
-        # JSON APIs take the display name of `Name <email>` in a field of its own and reject it in the email field
         def email_and_name(address, email_key: "email", name_key: "name")
           match = address.match(/\A(?<name>.*?)\s*<(?<email>[^<>]+)>\z/m)
           return {email_key => address} unless match
