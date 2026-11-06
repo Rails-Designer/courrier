@@ -11,8 +11,8 @@ module Courrier
             "from" => recipients(@options.from)&.first,
             "to" => recipients(@options.to),
             "reply_to" => address_list(@options.reply_to, as: :plain)&.first,
-            "cc" => recipients(@options.cc),
-            "bcc" => recipients(@options.bcc),
+            "cc" => bare_addresses(@options.cc),
+            "bcc" => bare_addresses(@options.bcc),
             "subject" => @options.subject,
             "text" => @options.text,
             "html" => @options.html
@@ -20,6 +20,9 @@ module Courrier
         end
 
         private
+
+        # The API documents cc/bcc as plain address strings (named objects only for from/to)
+        def bare_addresses(value) = recipients(value)&.map { |recipient| recipient["address"] }
 
         def recipients(value)
           address_list(value, as: :plain)&.map { |address| email_and_name(address, email_key: "address") }
