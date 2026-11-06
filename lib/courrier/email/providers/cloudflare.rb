@@ -8,11 +8,11 @@ module Courrier
 
         def body
           {
-            "from" => @options.from,
-            "to" => @options.to,
-            "reply_to" => @options.reply_to,
-            "cc" => @options.cc,
-            "bcc" => @options.bcc,
+            "from" => recipients(@options.from)&.first,
+            "to" => recipients(@options.to),
+            "reply_to" => address_list(@options.reply_to, as: :plain)&.first,
+            "cc" => recipients(@options.cc),
+            "bcc" => recipients(@options.bcc),
             "subject" => @options.subject,
             "text" => @options.text,
             "html" => @options.html
@@ -20,6 +20,10 @@ module Courrier
         end
 
         private
+
+        def recipients(value)
+          address_list(value, as: :plain)&.map { |address| email_and_name(address, email_key: "address") }
+        end
 
         def endpoint_url
           account_id = @provider_options.account_id
