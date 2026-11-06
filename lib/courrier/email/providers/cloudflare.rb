@@ -8,11 +8,11 @@ module Courrier
 
         def body
           {
-            "from" => @options.from,
-            "to" => @options.to,
-            "reply_to" => @options.reply_to,
-            "cc" => @options.cc,
-            "bcc" => @options.bcc,
+            "from" => recipients(@options.from)&.first,
+            "to" => recipients(@options.to),
+            "reply_to" => address_list(@options.reply_to, as: :plain)&.first,
+            "cc" => bare_addresses(@options.cc),
+            "bcc" => bare_addresses(@options.bcc),
             "subject" => @options.subject,
             "text" => @options.text,
             "html" => @options.html
@@ -20,6 +20,13 @@ module Courrier
         end
 
         private
+
+        # The API documents cc/bcc as plain address strings (named objects only for from/to)
+        def bare_addresses(value) = recipients(value)&.map { |recipient| recipient["address"] }
+
+        def recipients(value)
+          address_list(value, as: :plain)&.map { |address| email_and_name(address, email_key: "address") }
+        end
 
         def endpoint_url
           account_id = @provider_options.account_id
