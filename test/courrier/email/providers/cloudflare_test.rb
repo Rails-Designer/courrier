@@ -19,7 +19,7 @@ module Courrier::Email::Providers
         {
           "from" => {"address" => "devs@railsdesigner.com", "name" => "Rails Designer"},
           "to" => [{"address" => "first@example.com"}, {"address" => "second@example.com", "name" => "Second Person"}],
-          "reply_to" => "support@railsdesigner.com",
+          "reply_to" => {"address" => "support@railsdesigner.com"},
           "cc" => ["copy@example.com"],
           "bcc" => ["archive@example.com"],
           "subject" => "Test Subject",
@@ -28,6 +28,18 @@ module Courrier::Email::Providers
         },
         @provider.body
       )
+    end
+
+    def test_sends_a_display_name_on_reply_to
+      email = TestEmail.new(
+        from: "devs@railsdesigner.com",
+        to: "first@example.com",
+        reply_to: "Support <support@railsdesigner.com>"
+      )
+
+      body = Cloudflare.new(api_key: "test_key", options: email.options, provider_options: Struct.new(:account_id).new("acct")).body
+
+      assert_equal({"address" => "support@railsdesigner.com", "name" => "Support"}, body["reply_to"])
     end
 
     def test_authenticates_with_api_key

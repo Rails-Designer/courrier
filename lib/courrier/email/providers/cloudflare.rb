@@ -10,7 +10,7 @@ module Courrier
           {
             "from" => recipients(@options.from)&.first,
             "to" => recipients(@options.to),
-            "reply_to" => address_list(@options.reply_to, as: :plain)&.first,
+            "reply_to" => recipients(@options.reply_to)&.first,
             "cc" => bare_addresses(@options.cc),
             "bcc" => bare_addresses(@options.bcc),
             "subject" => @options.subject,
