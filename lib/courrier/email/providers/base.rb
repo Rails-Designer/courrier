@@ -56,7 +56,7 @@ module Courrier
         def address_element(address, as)
           case as
           when :email then email_and_name(address)
-          when :address then {"address" => address}
+          when :address then email_and_name(address, email_key: "address")
           else address
           end
         end

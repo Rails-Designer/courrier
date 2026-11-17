@@ -97,6 +97,27 @@ module Courrier::Email::Providers
       refute_includes body["originator"].keys, "reply_to"
     end
 
+    def test_sends_display_name_in_its_own_field
+      email = TestEmail.new(
+        from: "Rails Designer <devs@railsdesigner.com>",
+        to: 'Jane Doe <jane@example.com>, "Doe, \\"Johnny\\" John" <john@example.com>, bare@example.com',
+        reply_to: "Support <support@railsdesigner.com>"
+      )
+
+      body = provider_for(email).body
+
+      assert_equal(
+        [
+          {"address" => "jane@example.com", "name" => "Jane Doe"},
+          {"address" => "john@example.com", "name" => 'Doe, "Johnny" John'},
+          {"address" => "bare@example.com"}
+        ],
+        body["recipients"]["to"]
+      )
+      assert_equal({"address" => "devs@railsdesigner.com", "name" => "Rails Designer"}, body["originator"]["from"])
+      assert_equal({"address" => "support@railsdesigner.com", "name" => "Support"}, body["originator"]["reply_to"])
+    end
+
     private
 
     def provider_for(email)
