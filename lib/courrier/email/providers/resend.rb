@@ -9,10 +9,10 @@ module Courrier
         def body
           {
             "from" => @options.from,
-            "to" => @options.to,
-            "reply_to" => @options.reply_to,
-            "cc" => @options.cc,
-            "bcc" => @options.bcc,
+            "to" => address_list(@options.to, as: :plain),
+            "reply_to" => address_list(@options.reply_to, as: :plain),
+            "cc" => address_list(@options.cc, as: :plain),
+            "bcc" => address_list(@options.bcc, as: :plain),
             "subject" => @options.subject,
             "text" => @options.text,
             "html" => @options.html
