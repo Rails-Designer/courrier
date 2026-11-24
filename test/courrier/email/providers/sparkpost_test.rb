@@ -59,6 +59,19 @@ module Courrier::Email::Providers
       )
     end
 
+    def test_sends_display_names_in_the_name_field
+      body = provider_for(to: "Jane Doe <jane@example.com>, \"Doe, John\" <john@example.com>", cc: "Copy <copy@example.com>").body
+
+      assert_equal(
+        [
+          {"address" => {"email" => "jane@example.com", "name" => "Jane Doe", "header_to" => "Jane Doe <jane@example.com>, \"Doe, John\" <john@example.com>"}},
+          {"address" => {"email" => "john@example.com", "name" => "Doe, John", "header_to" => "Jane Doe <jane@example.com>, \"Doe, John\" <john@example.com>"}},
+          {"address" => {"email" => "copy@example.com", "name" => "Copy", "header_to" => "Jane Doe <jane@example.com>, \"Doe, John\" <john@example.com>"}}
+        ],
+        body["recipients"]
+      )
+    end
+
     def test_authenticates_with_api_key
       assert_equal({"Authorization" => "test_key"}, @provider.send(:default_headers))
     end
@@ -66,7 +79,7 @@ module Courrier::Email::Providers
     private
 
     def provider_for(**options)
-      email = TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com", **options)
+      email = TestEmail.new(from: "devs@railsdesigner.com", **{to: "first@example.com"}.merge(options))
 
       Sparkpost.new(api_key: "test_key", options: email.options)
     end
