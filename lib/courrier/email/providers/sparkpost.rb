@@ -37,8 +37,8 @@ module Courrier
         end
 
         def recipients_for(value)
-          Array(address_list(value, as: :plain)).map do |address|
-            {"address" => {"email" => address, "header_to" => address_line(@options.to)}}
+          Array(address_list(value)).map do |address|
+            {"address" => address.merge("header_to" => address_line(@options.to))}
           end
         end
 
