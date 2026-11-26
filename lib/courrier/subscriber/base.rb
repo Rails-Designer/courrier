@@ -19,7 +19,7 @@ module Courrier
 
       private
 
-      def request(method, url, body = nil)
+      def request(method, url, body = nil, extra_headers = {})
         uri = URI(url)
         request_class = case method
         when :post then Net::HTTP::Post
@@ -32,7 +32,7 @@ module Courrier
         request = request_class.new(uri)
         request.body = body.to_json if body
 
-        headers.each { |key, value| request[key] = value }
+        headers.merge(extra_headers).each { |key, value| request[key] = value }
 
         response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
           http.request(request)
