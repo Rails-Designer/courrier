@@ -16,10 +16,10 @@ class Courrier::Subscriber::UrlEncodingTest < Minitest::Test
     assert_equal "https://api.buttondown.email/v1/subscribers/#{ENCODED}", request[:url]
   end
 
-  def test_mailerlite_encodes_the_email_in_the_delete_path
+  def test_mailerlite_encodes_the_email_in_the_lookup_path
     request = capture_request(Courrier::Subscriber::Mailerlite.new(api_key: "k")) { it.destroy(EMAIL) }
 
-    assert_equal :delete, request[:method]
+    assert_equal :get, request[:method]
     assert_equal "https://connect.mailerlite.com/api/subscribers/#{ENCODED}", request[:url]
   end
 
@@ -52,7 +52,7 @@ class Courrier::Subscriber::UrlEncodingTest < Minitest::Test
     result = Courrier::Subscriber::Result.new(response: Data.define(:code, :body).new(code: "200", body: "{}"))
 
     handler = lambda do |method, url, body = nil|
-      request = {method: method, url: url, body: body}
+      request ||= {method: method, url: url, body: body}
       result
     end
 
