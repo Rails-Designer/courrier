@@ -19,20 +19,18 @@ module Courrier
             "reply_to" => address_list(@options.reply_to)&.first,
 
             "subject" => @options.subject,
-            "content" => [
-              {
-                "type" => "text/plain",
-                "value" => @options.text
-              },
-              {
-                "type" => "text/html",
-                "value" => @options.html
-              }
-            ].compact
+            "content" => content
           }.compact
         end
 
         private
+
+        def content
+          [
+            {"type" => "text/plain", "value" => @options.text},
+            {"type" => "text/html", "value" => @options.html}
+          ].reject { it["value"].to_s.empty? }
+        end
 
         def default_headers
           {

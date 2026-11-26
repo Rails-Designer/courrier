@@ -43,6 +43,11 @@ module Courrier::Email::Providers
       refute_includes personalization.keys, "bcc"
     end
 
+    def test_omits_empty_content_parts
+      assert_equal [{"type" => "text/html", "value" => "<p>Hi</p>"}], content_for(html: "<p>Hi</p>")
+      assert_equal [{"type" => "text/plain", "value" => "Hi"}], content_for(text: "Hi")
+    end
+
     def test_authenticates_with_api_key
       assert_equal({"Authorization" => "Bearer test_key"}, @provider.send(:default_headers))
     end
@@ -68,6 +73,12 @@ module Courrier::Email::Providers
       email = TestEmail.new(from: "devs@railsdesigner.com", to: "first@example.com", **options)
 
       Sendgrid.new(api_key: "test_key", options: email.options)
+    end
+
+    def content_for(**parts)
+      options = Courrier::Email::Options.new(from: "devs@railsdesigner.com", to: "first@example.com", **parts)
+
+      Sendgrid.new(api_key: "test_key", options: options).body["content"]
     end
   end
 end
