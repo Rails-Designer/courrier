@@ -13,7 +13,11 @@ module Courrier
       end
 
       def destroy(email)
-        request(:delete, "#{ENDPOINT_URL}/#{URI.encode_www_form_component(email)}")
+        # Deleting requires the subscriber id; only the lookup accepts an email
+        lookup = request(:get, "#{ENDPOINT_URL}/#{URI.encode_www_form_component(email)}")
+        return lookup unless lookup.success?
+
+        request(:delete, "#{ENDPOINT_URL}/#{lookup.data.dig("data", "id")}")
       end
 
       private
